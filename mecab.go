@@ -14,7 +14,7 @@ type MeCab struct {
 	mecab *C.mecab_t
 }
 
-func New(args map[string]string) (*MeCab, error) {
+func New(args map[string]string) (MeCab, error) {
 	// build the argument
 	opts := make([]*C.char, 0, len(args)+1)
 	opt := C.CString("--allocate-sentence")
@@ -35,20 +35,20 @@ func New(args map[string]string) (*MeCab, error) {
 	// create new MeCab
 	mecab := C.mecab_new(C.int(len(opts)), (**C.char)(&opts[0]))
 	if mecab == nil {
-		return nil, errors.New("mecab is not created.")
+		return MeCab{}, errors.New("mecab is not created.")
 	}
 
-	return &MeCab{
+	return MeCab{
 		mecab: mecab,
 	}, nil
 }
 
-func (m *MeCab) Destroy() {
+func (m MeCab) Destroy() {
 	C.mecab_destroy(m.mecab)
 }
 
 // ParseToNode parses the string and returns the result as string
-func (m *MeCab) Parse(s string) (string, error) {
+func (m MeCab) Parse(s string) (string, error) {
 	input := C.CString(s)
 	defer C.free(unsafe.Pointer(input))
 
@@ -60,12 +60,12 @@ func (m *MeCab) Parse(s string) (string, error) {
 }
 
 // ParseToString is alias of Parse
-func (m *MeCab) ParseToString(s string) (string, error) {
+func (m MeCab) ParseToString(s string) (string, error) {
 	return m.Parse(s)
 }
 
 // ParseToNode parses the string and returns the result as Node
-func (m *MeCab) ParseToNode(s string) (Node, error) {
+func (m MeCab) ParseToNode(s string) (Node, error) {
 	input := C.CString(s)
 	defer C.free(unsafe.Pointer(input))
 
@@ -76,6 +76,6 @@ func (m *MeCab) ParseToNode(s string) (Node, error) {
 	return Node{node: node}, nil
 }
 
-func (m *MeCab) Error() error {
+func (m MeCab) Error() error {
 	return errors.New(C.GoString(C.mecab_strerror(m.mecab)))
 }

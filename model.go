@@ -13,7 +13,7 @@ type Model struct {
 	model *C.mecab_model_t
 }
 
-func NewModel(args map[string]string) (*Model, error) {
+func NewModel(args map[string]string) (Model, error) {
 	// build the argument
 	opts := make([]*C.char, 0, len(args)+1)
 	opt := C.CString("--allocate-sentence")
@@ -34,22 +34,22 @@ func NewModel(args map[string]string) (*Model, error) {
 	// create new MeCab model
 	model := C.mecab_model_new(C.int(len(opts)), (**C.char)(&opts[0]))
 	if model == nil {
-		return nil, errors.New("mecab_model is not created.")
+		return Model{}, errors.New("mecab_model is not created.")
 	}
 
-	return &Model{
+	return Model{
 		model: model,
 	}, nil
 }
 
-func (m *Model) Destroy() {
+func (m Model) Destroy() {
 	C.mecab_model_destroy(m.model)
 }
 
-func (m *Model) NewMeCab() (*MeCab, error) {
+func (m Model) NewMeCab() (MeCab, error) {
 	mecab := C.mecab_model_new_tagger(m.model)
 	if mecab == nil {
-		return nil, errors.New("mecab is not created.")
+		return MeCab{}, errors.New("mecab is not created.")
 	}
-	return &MeCab{mecab: mecab}, nil
+	return MeCab{mecab: mecab}, nil
 }
