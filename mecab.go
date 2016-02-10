@@ -16,8 +16,11 @@ type MeCab struct {
 
 func New(args map[string]string) (MeCab, error) {
 	// build the argument
-	opts := make([]*C.char, 0, len(args)+1)
-	opt := C.CString("--allocate-sentence")
+	opts := make([]*C.char, 0, len(args)+2)
+	opt := C.CString("mecab")
+	defer C.free(unsafe.Pointer(opt))
+	opts = append(opts, opt)
+	opt = C.CString("--allocate-sentence")
 	defer C.free(unsafe.Pointer(opt))
 	opts = append(opts, opt)
 	for k, v := range args {
