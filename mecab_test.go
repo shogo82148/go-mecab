@@ -38,6 +38,7 @@ func TestParseToNode(t *testing.T) {
 	}
 	defer mecab.Destroy()
 
+	// XXX: avoid GC, MeCab 0.996 has GC problem (see https://github.com/taku910/mecab/pull/24)
 	mecab.Parse("")
 
 	node, err := mecab.ParseToNode("こんにちは世界")
