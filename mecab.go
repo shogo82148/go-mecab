@@ -65,15 +65,15 @@ func (m *MeCab) ParseToString(s string) (string, error) {
 }
 
 // ParseToNode parses the string and returns the result as Node
-func (m *MeCab) ParseToNode(s string) (*Node, error) {
+func (m *MeCab) ParseToNode(s string) (Node, error) {
 	input := C.CString(s)
 	defer C.free(unsafe.Pointer(input))
 
 	node := C.mecab_sparse_tonode(m.mecab, input)
 	if node == nil {
-		return nil, m.Error()
+		return Node{}, m.Error()
 	}
-	return &Node{node: node}, nil
+	return Node{node: node}, nil
 }
 
 func (m *MeCab) Error() error {
