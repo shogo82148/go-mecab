@@ -30,6 +30,15 @@ func TestParse(t *testing.T) {
 	}
 }
 
+func BenchmarkParse(b *testing.B) {
+	mecab, _ := New(map[string]string{"output-format-type": "wakati"})
+	defer mecab.Destroy()
+
+	for i := 0; i < b.N; i++ {
+		mecab.Parse("こんにちは世界")
+	}
+}
+
 func TestParseLattice(t *testing.T) {
 	mecab, err := New(map[string]string{"output-format-type": "wakati"})
 	if err != nil {
@@ -59,6 +68,20 @@ func TestParseLattice(t *testing.T) {
 	}
 }
 
+func BenchmarkParseLattice(b *testing.B) {
+	mecab, _ := New(map[string]string{"output-format-type": "wakati"})
+	defer mecab.Destroy()
+
+	lattice, _ := NewLattice()
+	defer lattice.Destroy()
+
+	for i := 0; i < b.N; i++ {
+		lattice.SetSentence("こんにちは世界")
+		mecab.ParseLattice(lattice)
+		lattice.String()
+	}
+}
+
 func TestParseToNode(t *testing.T) {
 	mecab, err := New(map[string]string{})
 	if err != nil {
@@ -82,5 +105,19 @@ func TestParseToNode(t *testing.T) {
 	node = node.Next()
 	if node.Surface() != "世界" {
 		t.Errorf("want 世界, but %s", node.Surface())
+	}
+}
+
+func BenchmarkParseToNode(b *testing.B) {
+	mecab, _ := New(map[string]string{})
+	defer mecab.Destroy()
+
+	// XXX: avoid GC, MeCab 0.996 has GC problem (see https://github.com/taku910/mecab/pull/24)
+	mecab.Parse("")
+
+	for i := 0; i < b.N; i++ {
+		for node, _ := mecab.ParseToNode("こんにちは世界"); node != (Node{}); node = node.Next() {
+			node.Surface()
+		}
 	}
 }
