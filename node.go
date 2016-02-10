@@ -51,22 +51,22 @@ func (node Node) RLength() int {
 
 // Prev returns the previous Node.
 func (node Node) Prev() Node {
-	return Node{node: node.node.prev}
+	return Node{node: (*C.mecab_node_t)(node.node.prev)}
 }
 
 // Next returns the next Node.
 func (node Node) Next() Node {
-	return Node{node: node.node.next}
+	return Node{node: (*C.mecab_node_t)(node.node.next)}
 }
 
 // ENext resturns a node which ends same position
 func (node Node) ENext() Node {
-	return Node{node: node.node.enext}
+	return Node{node: (*C.mecab_node_t)(node.node.enext)}
 }
 
 // ENext resturns a node which begins same position
 func (node Node) BNext() Node {
-	return Node{node: node.node.bnext}
+	return Node{node: (*C.mecab_node_t)(node.node.bnext)}
 }
 
 // Stat returns the type of Node.
