@@ -67,6 +67,14 @@ func (m MeCab) ParseToString(s string) (string, error) {
 	return m.Parse(s)
 }
 
+// ParseToNode parses the lattice and returns the result as string.
+func (m MeCab) ParseLattice(lattice Lattice) error {
+	if C.mecab_parse_lattice(m.mecab, lattice.lattice) == 0 {
+		return errors.New("parse error")
+	}
+	return nil
+}
+
 // ParseToNode parses the string and returns the result as Node
 func (m MeCab) ParseToNode(s string) (Node, error) {
 	input := C.CString(s)

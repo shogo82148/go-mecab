@@ -30,6 +30,35 @@ func TestParse(t *testing.T) {
 	}
 }
 
+func TestParseLattice(t *testing.T) {
+	mecab, err := New(map[string]string{"output-format-type": "wakati"})
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+		return
+	}
+	defer mecab.Destroy()
+
+	lattice, err := NewLattice()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+		return
+	}
+	defer lattice.Destroy()
+
+	lattice.SetSentence("こんにちは世界")
+	err = mecab.ParseLattice(lattice)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+		return
+	}
+	expected := "こんにちは\t感動詞,*,*,*,*,*,こんにちは,コンニチハ,コンニチワ\n" +
+		"世界\t名詞,一般,*,*,*,*,世界,セカイ,セカイ\n" +
+		"EOS\n"
+	if lattice.String() != expected {
+		t.Errorf("expected %s, but %s", expected, lattice.String())
+	}
+}
+
 func TestParseToNode(t *testing.T) {
 	mecab, err := New(map[string]string{})
 	if err != nil {

@@ -14,6 +14,7 @@ type Lattice struct {
 
 func NewLattice() (Lattice, error) {
 	lattice := C.mecab_lattice_new()
+
 	if lattice == nil {
 		return Lattice{}, errors.New("mecab_lattice is not created")
 	}
@@ -47,6 +48,7 @@ func (l Lattice) Sentence() string {
 func (l Lattice) SetSentence(s string) {
 	input := C.CString(s)
 	defer C.free(unsafe.Pointer(input))
+	C.mecab_lattice_add_request_type(l.lattice, 64) // MECAB_ALLOCATE_SENTENCE = 64
 	C.mecab_lattice_set_sentence(l.lattice, input)
 }
 
