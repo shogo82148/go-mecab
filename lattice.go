@@ -29,7 +29,7 @@ func (l Lattice) Clear() {
 }
 
 func (l Lattice) IsAvailable() bool {
-	return C.mecab_lattice_clear(l.lattice) != 0
+	return C.mecab_lattice_is_available(l.lattice) != 0
 }
 
 func (l Lattice) BOSNode() Node {
