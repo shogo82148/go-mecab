@@ -47,6 +47,7 @@ func (m *MeCab) Destroy() {
 	C.mecab_destroy(m.mecab)
 }
 
+// ParseToNode parses the string and returns the result as string
 func (m *MeCab) Parse(s string) (string, error) {
 	input := C.CString(s)
 	defer C.free(unsafe.Pointer(input))
@@ -59,8 +60,20 @@ func (m *MeCab) Parse(s string) (string, error) {
 }
 
 // ParseToString is alias of Parse
-func (m *MeCab) ParseToString(s string) (string, err) {
+func (m *MeCab) ParseToString(s string) (string, error) {
 	return m.Parse(s)
+}
+
+// ParseToNode parses the string and returns the result as Node
+func (m *MeCab) ParseToNode(s string) (*Node, error) {
+	input := C.CString(s)
+	defer C.free(unsafe.Pointer(input))
+
+	node := C.mecab_sparse_tonode(m.mecab, input)
+	if node == nil {
+		return nil, m.Error()
+	}
+	return &Node{node: node}, nil
 }
 
 func (m *MeCab) Error() error {
