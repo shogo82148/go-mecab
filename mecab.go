@@ -58,6 +58,11 @@ func (m *MeCab) Parse(s string) (string, error) {
 	return C.GoString(result), nil
 }
 
+// ParseToString is alias of Parse
+func (m *MeCab) ParseToString(s string) (string, err) {
+	return m.Parse(s)
+}
+
 func (m *MeCab) Error() error {
 	return errors.New(C.GoString(C.mecab_strerror(m.mecab)))
 }
