@@ -3,55 +3,31 @@ package mecab
 // #include <mecab.h>
 // #include <stdlib.h>
 import "C"
+
 import (
 	"errors"
-	"fmt"
 	"unsafe"
 )
 
 type MeCab struct {
-	model *C.mecab_model_t
-}
-
-func New(args map[string]string) (*MeCab, error) {
-	var model *C.mecab_model_t
-
-	// build the argument
-	opts := make([]*C.char, 0, len(args)+1)
-	opt := C.CString("--allocate-sentence")
-	defer C.free(unsafe.Pointer(opt))
-	opts = append(opts, opt)
-	for k, v := range args {
-		var goopt string
-		if v != "" {
-			goopt = fmt.Sprintf("--%s=%s", k, v)
-		} else {
-			goopt = "--" + k
-		}
-		opt := C.CString(goopt)
-		defer C.free(unsafe.Pointer(opt))
-		opts = append(opts, opt)
-	}
-
-	// create new MeCab model
-	model = C.mecab_model_new(C.int(len(opts)), (**C.char)(&opts[0]))
-	if model == nil {
-		return nil, errors.New("mecab_model is not created.")
-	}
-
-	return &MeCab{
-		model: model,
-	}, nil
+	mecab *C.mecab_t
 }
 
 func (m *MeCab) Destroy() {
-	C.mecab_model_destroy(m.model)
+	C.mecab_destroy(m.mecab)
 }
 
-func (m *MeCab) NewTagger() (*Tagger, error) {
-	tagger := C.mecab_model_new_tagger(m.model)
-	if tagger == nil {
-		return nil, errors.New("mecab_tagger is not created.")
+func (m *MeCab) Parse(s string) (string, error) {
+	input := C.CString(s)
+	defer C.free(unsafe.Pointer(input))
+
+	result := C.mecab_sparse_tostr(m.mecab, input)
+	if result == nil {
+		return "", m.Error()
 	}
-	return &Tagger{tagger: tagger}, nil
+	return C.GoString(result), nil
+}
+
+func (m *MeCab) Error() error {
+	return errors.New(C.GoString(C.mecab_strerror(m.mecab)))
 }
