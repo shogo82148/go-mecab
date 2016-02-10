@@ -56,3 +56,11 @@ func (m Model) NewMeCab() (MeCab, error) {
 	}
 	return MeCab{mecab: mecab}, nil
 }
+
+func (m Model) NewLattice() (Lattice, error) {
+	lattice := C.mecab_model_new_lattice(m.model)
+	if lattice == nil {
+		return Lattice{}, errors.New("lattice is not created")
+	}
+	return Lattice{lattice: lattice}, nil
+}
