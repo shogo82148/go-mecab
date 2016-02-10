@@ -1,0 +1,13 @@
+language: go
+go:
+- '1.2'
+- '1.3'
+- '1.4'
+- '1.5'
+- 'tip'
+sudo: true
+before_install:
+- curl https://gist.githubusercontent.com/dtan4/351d031bec0c3d45cd8f/raw/mecab_install.sh | bash
+- export CGO_LDFLAGS="`mecab-config --libs`"
+- export CGO_FLAGS="`mecab-config --inc-dir`"
+# from http://qiita.com/dtan4/items/c6a087666296fbd5fffb
