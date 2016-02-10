@@ -22,7 +22,13 @@ func New(args map[string]string) (*MeCab, error) {
 	defer C.free(unsafe.Pointer(opt))
 	opts = append(opts, opt)
 	for k, v := range args {
-		opt := C.CString(fmt.Sprintf("--%s=%s", k, v))
+		var goopt string
+		if v != "" {
+			goopt = fmt.Sprintf("--%s=%s", k, v)
+		} else {
+			goopt = "--" + k
+		}
+		opt := C.CString(goopt)
 		defer C.free(unsafe.Pointer(opt))
 		opts = append(opts, opt)
 	}
