@@ -14,8 +14,6 @@ type Model struct {
 }
 
 func NewModel(args map[string]string) (*Model, error) {
-	var model *C.mecab_model_t
-
 	// build the argument
 	opts := make([]*C.char, 0, len(args)+1)
 	opt := C.CString("--allocate-sentence")
@@ -34,7 +32,7 @@ func NewModel(args map[string]string) (*Model, error) {
 	}
 
 	// create new MeCab model
-	model = C.mecab_model_new(C.int(len(opts)), (**C.char)(&opts[0]))
+	model := C.mecab_model_new(C.int(len(opts)), (**C.char)(&opts[0]))
 	if model == nil {
 		return nil, errors.New("mecab_model is not created.")
 	}

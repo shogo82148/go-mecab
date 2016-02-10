@@ -6,11 +6,41 @@ import "C"
 
 import (
 	"errors"
+	"fmt"
 	"unsafe"
 )
 
 type MeCab struct {
 	mecab *C.mecab_t
+}
+
+func New(args map[string]string) (*MeCab, error) {
+	// build the argument
+	opts := make([]*C.char, 0, len(args)+1)
+	opt := C.CString("--allocate-sentence")
+	defer C.free(unsafe.Pointer(opt))
+	opts = append(opts, opt)
+	for k, v := range args {
+		var goopt string
+		if v != "" {
+			goopt = fmt.Sprintf("--%s=%s", k, v)
+		} else {
+			goopt = "--" + k
+		}
+		opt := C.CString(goopt)
+		defer C.free(unsafe.Pointer(opt))
+		opts = append(opts, opt)
+	}
+
+	// create new MeCab
+	mecab := C.mecab_new(C.int(len(opts)), (**C.char)(&opts[0]))
+	if mecab == nil {
+		return nil, errors.New("mecab is not created.")
+	}
+
+	return &MeCab{
+		mecab: mecab,
+	}, nil
 }
 
 func (m *MeCab) Destroy() {
