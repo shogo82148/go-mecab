@@ -34,9 +34,19 @@ func (stat NodeStat) String() string {
 	return ""
 }
 
+// String returns Surface and Feature
+func (node Node) String() string {
+	return node.Surface() + "\t" + node.Feature()
+}
+
 // Surface returns the surface string.
 func (node Node) Surface() string {
 	return C.GoStringN(node.node.surface, C.int(node.node.length))
+}
+
+// Feature returns the feature.
+func (node Node) Feature() string {
+	return C.GoString(node.node.feature)
 }
 
 // Length returns the length of the surface string.
