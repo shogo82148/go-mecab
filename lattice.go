@@ -33,11 +33,11 @@ func (l Lattice) IsAvailable() bool {
 }
 
 func (l Lattice) BOSNode() Node {
-	return Node{node: l.mecab_lattice_get_bos_node(l.lattice)}
+	return Node{node: C.mecab_lattice_get_bos_node(l.lattice)}
 }
 
 func (l Lattice) EOSNode() Node {
-	return Node{node: l.mecab_lattice_get_eos_node(l.lattice)}
+	return Node{node: C.mecab_lattice_get_eos_node(l.lattice)}
 }
 
 func (l Lattice) Sentence() string {
