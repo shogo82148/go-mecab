@@ -41,3 +41,11 @@ func New(args map[string]string) (*MeCab, error) {
 func (m *MeCab) Destroy() {
 	C.mecab_model_destroy(m.model)
 }
+
+func (m *MeCab) NewTagger() (*Tagger, error) {
+	tagger := C.mecab_model_new_tagger(m.model)
+	if tagger == nil {
+		return nil, errors.New("mecab_tagger is not created.")
+	}
+	return &Tagger{tagger: tagger}, nil
+}
