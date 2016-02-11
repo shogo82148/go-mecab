@@ -9,7 +9,7 @@ go-mecab is [MeCab](http://taku910.github.io/mecab/) binding for Golang.
 ``` go
 import "github.com/shogo82148/go-mecab"
 
-tagger := mecab.New(map[string]string{"output-format-type": "wakati"})
+tagger, err := mecab.New(map[string]string{"output-format-type": "wakati"})
 defer tagger.Destroy()
 result, err := tagger.Parse("こんにちは世界")
 fmt.Println(result)
