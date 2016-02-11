@@ -55,6 +55,9 @@ func ExampleMeCab_ParseToNode() {
 	}
 	defer tagger.Destroy()
 
+	// XXX: avoid GC problem with MeCab 0.996 (see https://github.com/taku910/mecab/pull/24)
+	tagger.Parse("")
+
 	node, err := tagger.ParseToNode("こんにちは世界")
 	if err != nil {
 		panic(err)
