@@ -52,10 +52,12 @@ func (m MeCab) Destroy() {
 
 // ParseToNode parses the string and returns the result as string
 func (m MeCab) Parse(s string) (string, error) {
-	input := C.CString(s)
-	defer C.free(unsafe.Pointer(input))
-
-	result := C.mecab_sparse_tostr(m.mecab, input)
+	length := C.size_t(len(s))
+	if s == "" {
+		s = "dummy"
+	}
+	input := *(**C.char)(unsafe.Pointer(&s))
+	result := C.mecab_sparse_tostr2(m.mecab, input, length)
 	if result == nil {
 		return "", m.Error()
 	}
@@ -77,10 +79,13 @@ func (m MeCab) ParseLattice(lattice Lattice) error {
 
 // ParseToNode parses the string and returns the result as Node
 func (m MeCab) ParseToNode(s string) (Node, error) {
-	input := C.CString(s)
-	defer C.free(unsafe.Pointer(input))
+	length := C.size_t(len(s))
+	if s == "" {
+		s = "dummy"
+	}
+	input := *(**C.char)(unsafe.Pointer(&s))
 
-	node := C.mecab_sparse_tonode(m.mecab, input)
+	node := C.mecab_sparse_tonode2(m.mecab, input, length)
 	if node == nil {
 		return Node{}, m.Error()
 	}

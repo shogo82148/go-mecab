@@ -46,10 +46,13 @@ func (l Lattice) Sentence() string {
 }
 
 func (l Lattice) SetSentence(s string) {
-	input := C.CString(s)
-	defer C.free(unsafe.Pointer(input))
+	length := C.size_t(len(s))
+	if s == "" {
+		s = "dummy"
+	}
+	input := *(**C.char)(unsafe.Pointer(&s))
 	C.mecab_lattice_add_request_type(l.lattice, 64) // MECAB_ALLOCATE_SENTENCE = 64
-	C.mecab_lattice_set_sentence(l.lattice, input)
+	C.mecab_lattice_set_sentence2(l.lattice, input, length)
 }
 
 func (l Lattice) String() string {
