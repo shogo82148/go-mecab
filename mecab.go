@@ -10,10 +10,12 @@ import (
 	"unsafe"
 )
 
+// MeCab is a morphological parser.
 type MeCab struct {
 	mecab *C.mecab_t
 }
 
+// New returns new MeCab parser.
 func New(args map[string]string) (MeCab, error) {
 	// build the argument
 	opts := make([]*C.char, 0, len(args)+2)
@@ -38,7 +40,7 @@ func New(args map[string]string) (MeCab, error) {
 	// create new MeCab
 	mecab := C.mecab_new(C.int(len(opts)), (**C.char)(&opts[0]))
 	if mecab == nil {
-		return MeCab{}, errors.New("mecab is not created.")
+		return MeCab{}, errors.New("mecab: mecab is not created")
 	}
 
 	return MeCab{
@@ -46,11 +48,12 @@ func New(args map[string]string) (MeCab, error) {
 	}, nil
 }
 
+// Destroy frees the MeCab parser.
 func (m MeCab) Destroy() {
 	C.mecab_destroy(m.mecab)
 }
 
-// ParseToNode parses the string and returns the result as string
+// Parse parses the string and returns the result as string
 func (m MeCab) Parse(s string) (string, error) {
 	length := C.size_t(len(s))
 	if s == "" {
@@ -69,7 +72,7 @@ func (m MeCab) ParseToString(s string) (string, error) {
 	return m.Parse(s)
 }
 
-// ParseToNode parses the lattice and returns the result as string.
+// ParseLattice parses the lattice and returns the result as string.
 func (m MeCab) ParseLattice(lattice Lattice) error {
 	if C.mecab_parse_lattice(m.mecab, lattice.lattice) == 0 {
 		return errors.New("parse error")

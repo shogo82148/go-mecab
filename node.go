@@ -4,18 +4,29 @@ package mecab
 // #include <stdlib.h>
 import "C"
 
+// Node is a node in a lattice.
 type Node struct {
 	node *C.mecab_node_t
 }
 
+// NodeStat is status of a node.
 type NodeStat int
 
 const (
-	NormalNode  NodeStat = 0
-	UnknownNode          = 1
-	BOSNode              = 2
-	EOSNode              = 3
-	EONNode              = 4
+	// NormalNode is status for normal node.
+	NormalNode NodeStat = 0
+
+	// UnknownNode is status for unknown node.
+	UnknownNode = 1
+
+	// BOSNode is status for BOS(Begin Of Sentence) node.
+	BOSNode = 2
+
+	// EOSNode is status for EOS(End Of Sentence) node.
+	EOSNode = 3
+
+	// EONNode is status for EON(End Of Node) node.
+	EONNode = 4
 )
 
 func (stat NodeStat) String() string {
