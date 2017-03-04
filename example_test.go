@@ -63,7 +63,7 @@ func ExampleMeCab_ParseToNode() {
 		panic(err)
 	}
 
-	for ; node != (mecab.Node{}); node = node.Next() {
+	for ; !node.IsZero(); node = node.Next() {
 		fmt.Printf("%s\t%s\n", node.Surface(), node.Feature())
 	}
 	// Output:

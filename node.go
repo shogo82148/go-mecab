@@ -144,3 +144,8 @@ func (node Node) WCost() int {
 func (node Node) Cost() int {
 	return int(node.node.cost)
 }
+
+// IsZero returns whether the node is zero.
+func (node Node) IsZero() bool {
+	return node.node == nil
+}
