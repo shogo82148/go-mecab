@@ -84,8 +84,8 @@ func (node Node) Stat() NodeStat {
 	return NodeStat(node.node.stat)
 }
 
-// Id returns the id of Node.
-func (node Node) Id() int {
+// ID returns the id of Node.
+func (node Node) ID() int {
 	return int(node.node.id)
 }
 
