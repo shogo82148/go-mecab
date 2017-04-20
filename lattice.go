@@ -1,5 +1,6 @@
 package mecab
 
+// #cgo LDFLAGS: -lmecab
 // #include <mecab.h>
 // #include <stdlib.h>
 import "C"
