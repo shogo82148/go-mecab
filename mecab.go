@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"reflect"
 	"unsafe"
+	"runtime"
 )
 
 // MeCab is a morphological parser.
@@ -67,6 +68,7 @@ func (m MeCab) Parse(s string) (string, error) {
 	if result == nil {
 		return "", m.Error()
 	}
+	runtime.KeepAlive(s)
 	return C.GoString(result), nil
 }
 
@@ -96,6 +98,7 @@ func (m MeCab) ParseToNode(s string) (Node, error) {
 	if node == nil {
 		return Node{}, m.Error()
 	}
+	runtime.KeepAlive(s)
 	return Node{node: node}, nil
 }
 
