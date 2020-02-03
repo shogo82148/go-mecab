@@ -23,6 +23,10 @@ jobs:
           .github/install-mecab-linux.sh
           echo "::set-env name=CGO_LDFLAGS::$(mecab-config --libs)"
           echo "::set-env name=CGO_CFLAGS::-I$(mecab-config --inc-dir)"
+      - name: setup Go ${{ matrix.go }}
+        with:
+          go-version: ${{ matrix.go }}
       - name: test
         run: |
+          go version
           go test -v -race ./...
