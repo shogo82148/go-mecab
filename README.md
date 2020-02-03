@@ -40,3 +40,5 @@ $ go get github.com/shogo82148/go-mecab
 - [godoc](https://godoc.org/github.com/shogo82148/go-mecab)
 - [MeCab](http://taku910.github.io/mecab/)
 - [MeCab repository](https://github.com/taku910/mecab)
+- [Unofficial fork of taku910/mecab](https://shogo82148.github.io/mecab)
+- [Unofficial fork of taku910/mecab repository](https://github.com/shogo82148/mecab)
