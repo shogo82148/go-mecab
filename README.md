@@ -1,6 +1,7 @@
 # go-mecab
 
-[![Build Status](https://travis-ci.org/shogo82148/go-mecab.svg?branch=master)](https://travis-ci.org/shogo82148/go-mecab)
+![test](https://github.com/shogo82148/go-mecab/workflows/test/badge.svg)
+[![GoDoc](https://godoc.org/github.com/shogo82148/go-mecab?status.svg)](https://godoc.org/github.com/shogo82148/go-mecab)
 
 go-mecab is [MeCab](http://taku910.github.io/mecab/) binding for Golang.
 
