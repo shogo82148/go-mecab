@@ -67,6 +67,8 @@ jobs:
       fail-fast: false
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: install MSYS2
         run: |
           choco install --no-progress msys2
@@ -74,7 +76,6 @@ jobs:
         run: |
           echo '::set-env name=PATH::C:\tools\msys64\bin;C:\tools\msys64\usr\bin;C:\tools\msys64\mingw64\bin;'
 
-      - uses: actions/checkout@v2
       - name: setup MSYS2 and MeCab
         run: |
           bash -lc .github/install-mecab-mingw.sh
