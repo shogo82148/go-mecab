@@ -70,7 +70,7 @@ func (m Model) NewLattice() (Lattice, error) {
 	return Lattice{lattice: lattice}, nil
 }
 
-// Swap replaces the model by the othor model.
+// Swap replaces the model by the other model.
 func (m Model) Swap(m2 Model) {
 	C.mecab_model_swap(m.model, m2.model)
 }
