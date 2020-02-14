@@ -78,7 +78,8 @@ jobs:
 
       - name: setup MSYS2 and MeCab
         run: |
-          bash -lc ./.github/install-mecab-mingw.sh
+          cp .github\install-mecab-mingw.sh C:\tools\msys64\usr\bin
+          bash -lc /usr/bin/install-mecab-mingw.sh
 
       - name: setup Go ${{ matrix.go }}
         uses: actions/setup-go@v1
