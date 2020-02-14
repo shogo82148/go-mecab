@@ -11,7 +11,7 @@ pacman -S --verbose --noconfirm --noprogressbar --needed make mingw-w64-x86_64-g
 TMPDIR=$(mktemp -d)
 trap 'rm -rfv "$TMPDIR"' EXIT
 
-export PATH=/bin;/usr/bin;/mingw64/bin
+export PATH=/bin:/usr/bin:/mingw64/bin
 
 MECAB_VERSION=0.996.2
 IPADIC_VERSION=2.7.0-20070801
