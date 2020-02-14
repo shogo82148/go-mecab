@@ -74,7 +74,7 @@ jobs:
         run: |
           echo '::set-env name=PATH::C:\tools\msys64\bin;C:\tools\msys64\usr\bin;C:\tools\msys64\mingw64\bin;'
       - name: setup MSYS2 and MeCab
-        run: bash -c .github/install-mecab-mingw.sh
+        run: bash -lc ./.github/install-mecab-mingw.sh
 
       - uses: actions/checkout@v2
       - name: setup Go ${{ matrix.go }}
