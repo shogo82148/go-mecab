@@ -22,8 +22,7 @@ tar zxfv mecab.tar.gz
 cd "mecab-$MECAB_VERSION"
 ./configure --enable-utf8-only
 make
-sudo make install
-sudo ldconfig
+make install
 
 cd "$TMPDIR"
 curl -o mecab-ipadic.tar.gz -sSL "https://github.com/shogo82148/mecab/releases/download/v$MECAB_VERSION/mecab-ipadic-$IPADIC_VERSION.tar.gz"
@@ -31,7 +30,7 @@ tar zxfv mecab-ipadic.tar.gz
 cd "mecab-ipadic-$IPADIC_VERSION"
 ./configure --with-charset=utf8
 make
-sudo make install
+make install
 
 echo "::set-env name=CGO_LDFLAGS::$(mecab-config --libs)"
 echo "::set-env name=CGO_CFLAGS::-I$(mecab-config --inc-dir)"
