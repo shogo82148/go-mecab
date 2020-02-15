@@ -67,6 +67,10 @@ jobs:
       fail-fast: false
     runs-on: windows-latest
     steps:
+      - name: setup Go ${{ matrix.go }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
       - uses: actions/checkout@v2
 
       - name: install MSYS2
@@ -74,17 +78,14 @@ jobs:
           choco install --no-progress msys2
       - name: Set ENV
         run: |
-          echo '::set-env name=PATH::C:\tools\msys64\bin;C:\tools\msys64\usr\bin;C:\tools\msys64\mingw64\bin;'
+          echo "::add-path::C:\tools\msys64\mingw64\bin"
+          echo "::add-path::C:\tools\msys64\usr\bin"
+          echo "::add-path::C:\tools\msys64\bin"
 
       - name: setup MSYS2 and MeCab
         run: |
           cp .github\install-mecab-mingw.sh C:\tools\msys64\usr\bin
           bash -lc /usr/bin/install-mecab-mingw.sh
-
-      - name: setup Go ${{ matrix.go }}
-        uses: actions/setup-go@v1
-        with:
-          go-version: ${{ matrix.go }}
       - name: test
         run: |
           go version
