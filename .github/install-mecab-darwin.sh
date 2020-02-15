@@ -16,7 +16,6 @@ tar zxfv mecab.tar.gz
 cd "mecab-$MECAB_VERSION"
 ./configure --enable-utf8-only
 make
-make check
 sudo make install
 
 cd "$TMPDIR"
