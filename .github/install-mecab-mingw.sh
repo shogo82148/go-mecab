@@ -31,6 +31,3 @@ cd "mecab-ipadic-$IPADIC_VERSION"
 ./configure --with-charset=utf8
 make
 make install
-
-echo "::set-env name=CGO_LDFLAGS::$(mecab-config --libs)"
-echo "::set-env name=CGO_CFLAGS::-I$(mecab-config --inc-dir)"

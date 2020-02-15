@@ -90,3 +90,6 @@ jobs:
         run: |
           go version
           go test -v -race ./...
+        env:
+          CGO_LDFLAGS: '-LC:\tools\msys64\usr\lib -lmecab -lstdc++'
+          CGO_CFLAGS: '-IC:\tools\msys64\usr\include'
