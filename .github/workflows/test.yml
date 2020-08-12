@@ -11,10 +11,11 @@ jobs:
     strategy:
       matrix:
         go:
-          - '1.12'
-          - '1.13'
-          - '1.14'
-          - '1'
+          - "1"
+          - "1.15"
+          - "1.14"
+          - "1.13"
+          - "1.12"
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -37,9 +38,11 @@ jobs:
     strategy:
       matrix:
         go:
-          - '1.12'
-          - '1.13'
-          - '1'
+          - "1"
+          - "1.15"
+          - "1.14"
+          - "1.13"
+          - "1.12"
       fail-fast: false
     runs-on: macos-latest
     steps:
