@@ -1,7 +1,7 @@
 # go-mecab
 
 ![test](https://github.com/shogo82148/go-mecab/workflows/test/badge.svg)
-[![GoDoc](https://godoc.org/github.com/shogo82148/go-mecab?status.svg)](https://godoc.org/github.com/shogo82148/go-mecab)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/shogo82148/go-mecab)](https://pkg.go.dev/github.com/shogo82148/go-mecab)
 
 go-mecab is [MeCab](http://taku910.github.io/mecab/) binding for Golang.
 
@@ -37,7 +37,7 @@ $ go get github.com/shogo82148/go-mecab
 
 ## SEE ALSO
 
-- [godoc](https://godoc.org/github.com/shogo82148/go-mecab)
+- [godoc on pkg.go.dev](https://pkg.go.dev/badge/github.com/shogo82148/go-mecab)
 - [MeCab](http://taku910.github.io/mecab/)
 - [MeCab repository](https://github.com/taku910/mecab)
 - [Unofficial fork of taku910/mecab](https://shogo82148.github.io/mecab)
