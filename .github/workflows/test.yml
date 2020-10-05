@@ -94,15 +94,15 @@ jobs:
           pacman-key --populate msys2
           pacman.exe -Sy
           pacman.exe -S --verbose --noconfirm --noprogressbar --needed autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool
-        shell: msys2_shell.cmd {0}
+        shell: C:\Windows\System32\cmd.exe /A /Q /C C:\msys64\msys2_shell.cmd -no-start -mingw64 -here {0}
       - name: install mecab
         run: |
           .github/install-mecab-mingw.sh
           echo "CGO_LDFLAGS=$(mecab-config --libs)" >> "$GITHUB_ENV"
           echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
-        shell: msys2_shell.cmd {0}
+        shell: C:\Windows\System32\cmd.exe /A /Q /C C:\msys64\msys2_shell.cmd -no-start -mingw64 -here {0}
       - name: test
         run: |
           go version
           go test -v -race ./...
-        shell: msys2_shell.cmd {0}
+        shell: C:\Windows\System32\cmd.exe /A /Q /C C:\msys64\msys2_shell.cmd -no-start -mingw64 -here {0}
