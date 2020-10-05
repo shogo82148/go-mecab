@@ -60,3 +60,48 @@ jobs:
         run: |
           go version
           go test -v -race ./...
+
+  mingw:
+    strategy:
+      matrix:
+        go:
+          - "1"
+          - "1.15"
+          - "1.14"
+          - "1.13"
+          - "1.12"
+      fail-fast: false
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup Go ${{ matrix.go }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Set ENV
+        run: |
+          # MSYS2 is pre-installed from https://github.com/actions/virtual-environments/releases/tag/win19%2F20200608.1
+          # but not added to PATH.
+          # so, we need to add it to PATH here.
+          echo 'C:\msys64;' >> "$GITHUB_PATH"
+          echo 'C:\msys64\bin' >> "$GITHUB_PATH"
+          echo 'C:\msys64\usr\bin' >> "$GITHUB_PATH"
+          echo 'C:\msys64\mingw64\bin' >> "$GITHUB_PATH"
+      - name: setup MSYS2
+        run: |
+          pacman-key --init
+          pacman-key --populate msys2
+          pacman.exe -Sy
+          pacman.exe -S --verbose --noconfirm --noprogressbar --needed autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool
+        shell: msys2_shell.cmd {0}
+      - name: install mecab
+        run: |
+          .github/install-mecab-mingw.sh
+          echo "CGO_LDFLAGS=$(mecab-config --libs)" >> "$GITHUB_ENV"
+          echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
+        shell: msys2_shell.cmd {0}
+      - name: test
+        run: |
+          go version
+          go test -v -race ./...
+        shell: msys2_shell.cmd {0}
