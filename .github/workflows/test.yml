@@ -97,8 +97,8 @@ jobs:
         shell: cmd
       - name: install mecab
         run: |
-          msys2_shell.cmd -no-start -defterm -mingw64 -here .github/install-mecab-mingw.sh
-        shell: cmd
+          .github/install-mecab-mingw.sh
+        shell: msys2_shell.cmd -no-start -defterm -mingw64 -here {0}
       - name: test
         run: |
           msys2_shell.cmd -no-start -defterm -mingw64 -here -c "go version"
