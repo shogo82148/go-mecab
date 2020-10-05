@@ -80,7 +80,7 @@ jobs:
           go-version: ${{ matrix.go }}
       - uses: msys2/setup-msys2@v2
         with:
-          install: autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool mingw-w64-libiconv
+          install: autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool libiconv-devel
 
       - name: install mecab
         run: |
