@@ -100,4 +100,4 @@ jobs:
       - name: test
         run: |
           msys2_shell.cmd -c "go version"
-          msys2_shell.cmd -c go test -v -race ./..."
+          msys2_shell.cmd -c "go test -v -race ./..."
