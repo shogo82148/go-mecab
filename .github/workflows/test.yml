@@ -90,17 +90,17 @@ jobs:
         shell: bash
       - name: setup MSYS2
         run: |
-          msys2_shell.cmd -c "pacman-key --init"
-          msys2_shell.cmd -c "pacman-key --populate msys2"
-          msys2_shell.cmd -c "pacman.exe -Sy"
-          msys2_shell.cmd -c "pacman.exe -S --verbose --noconfirm --noprogressbar --needed autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool"
+          msys2_shell.cmd -no-start -defterm -mingw64 -here -c "pacman-key --init"
+          msys2_shell.cmd -no-start -defterm -mingw64 -here -c "pacman-key --populate msys2"
+          msys2_shell.cmd -no-start -defterm -mingw64 -here -c "pacman.exe -Sy"
+          msys2_shell.cmd -no-start -defterm -mingw64 -here -c "pacman.exe -S --verbose --noconfirm --noprogressbar --needed autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool"
         shell: cmd
       - name: install mecab
         run: |
-          msys2_shell.cmd .github/install-mecab-mingw.sh
+          msys2_shell.cmd -no-start -defterm -mingw64 -here .github/install-mecab-mingw.sh
         shell: cmd
       - name: test
         run: |
-          msys2_shell.cmd -c "go version"
-          msys2_shell.cmd -c "go test -v -race ./..."
+          msys2_shell.cmd -no-start -defterm -mingw64 -here -c "go version"
+          msys2_shell.cmd -no-start -defterm -mingw64 -here -c "go test -v -race ./..."
         shell: cmd
