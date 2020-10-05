@@ -94,10 +94,13 @@ jobs:
           msys2_shell.cmd -c "pacman-key --populate msys2"
           msys2_shell.cmd -c "pacman.exe -Sy"
           msys2_shell.cmd -c "pacman.exe -S --verbose --noconfirm --noprogressbar --needed autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool"
+        shell: cmd
       - name: install mecab
         run: |
           msys2_shell.cmd .github/install-mecab-mingw.sh
+        shell: cmd
       - name: test
         run: |
           msys2_shell.cmd -c "go version"
           msys2_shell.cmd -c "go test -v -race ./..."
+        shell: cmd
