@@ -90,16 +90,19 @@ jobs:
         shell: bash
       - name: setup MSYS2
         run: |
-          msys2_shell.cmd -c "pacman-key --init"
-          msys2_shell.cmd -c "pacman-key --populate msys2"
-          msys2_shell.cmd -c "pacman.exe -Sy"
-          msys2_shell.cmd -c "pacman.exe -S --verbose --noconfirm --noprogressbar --needed autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool"
+          pacman-key --init
+          pacman-key --populate msys2
+          pacman.exe -Sy
+          pacman.exe -S --verbose --noconfirm --noprogressbar --needed autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool
+        shell: msys2_shell.cmd {0}
       - name: install mecab
         run: |
-          msys2_shell.cmd -c ".github/install-mecab-mingw.sh"
-          msys2_shell.cmd -c "echo CGO_LDFLAGS=$(mecab-config --libs) >> $GITHUB_ENV"
-          msys2_shell.cmd -c "echo CGO_CFLAGS=-I$(mecab-config --inc-dir) >> $GITHUB_ENV"
+          .github/install-mecab-mingw.sh
+          echo "CGO_LDFLAGS=$(mecab-config --libs)" >> "$GITHUB_ENV"
+          echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
+        shell: msys2_shell.cmd {0}
       - name: test
         run: |
-          msys2_shell.cmd -c "go version"
-          msys2_shell.cmd -c "go test -v -race ./..."
+          go version
+          go test -v -race ./...
+        shell: msys2_shell.cmd {0}
