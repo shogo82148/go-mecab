@@ -27,3 +27,6 @@ cd "mecab-ipadic-$IPADIC_VERSION"
 ./configure --with-charset=utf8
 make
 sudo make install
+
+echo "CGO_LDFLAGS=$(mecab-config --libs)" >> "$GITHUB_ENV"
+echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
