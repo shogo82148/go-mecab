@@ -18,7 +18,6 @@ cd "mecab-$MECAB_VERSION"
 make -j2
 # make check # it fails :(
 make install
-ldconfig
 
 cd "$TMPDIR"
 curl -o mecab-ipadic.tar.gz -sSL "https://github.com/shogo82148/mecab/releases/download/v$MECAB_VERSION/mecab-ipadic-$IPADIC_VERSION.tar.gz"
