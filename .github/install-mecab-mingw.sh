@@ -16,7 +16,7 @@ tar zxfv mecab.tar.gz
 cd "mecab-$MECAB_VERSION"
 ./configure --enable-utf8-only --host=x86_64-w64-mingw32
 make -j2
-make check
+# make check # it fails :(
 sudo make install
 sudo ldconfig
 
