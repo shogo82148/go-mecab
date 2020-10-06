@@ -17,8 +17,8 @@ cd "mecab-$MECAB_VERSION"
 ./configure --enable-utf8-only --host=x86_64-w64-mingw32
 make -j2
 # make check # it fails :(
-sudo make install
-sudo ldconfig
+make install
+ldconfig
 
 cd "$TMPDIR"
 curl -o mecab-ipadic.tar.gz -sSL "https://github.com/shogo82148/mecab/releases/download/v$MECAB_VERSION/mecab-ipadic-$IPADIC_VERSION.tar.gz"
@@ -26,7 +26,7 @@ tar zxfv mecab-ipadic.tar.gz
 cd "mecab-ipadic-$IPADIC_VERSION"
 ./configure --with-charset=utf8
 make
-sudo make install
+make install
 
 echo "CGO_LDFLAGS=$(mecab-config --libs)" >> "$GITHUB_ENV"
 echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
