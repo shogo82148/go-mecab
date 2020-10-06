@@ -8,8 +8,8 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"unsafe"
 	"runtime"
+	"unsafe"
 )
 
 // MeCab is a morphological parser.
@@ -39,10 +39,15 @@ func New(args map[string]string) (MeCab, error) {
 		opts = append(opts, opt)
 	}
 
+	// C.mecab_model_new sets an error in the thread local storage.
+	// so C.mecab_model_new and C.mecab_strerror must be call in same thread.
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
 	// create new MeCab
 	mecab := C.mecab_new(C.int(len(opts)), (**C.char)(&opts[0]))
 	if mecab == nil {
-		return MeCab{}, errors.New("mecab: mecab is not created")
+		return MeCab{}, errors.New(C.GoString(C.mecab_strerror(nil)))
 	}
 
 	return MeCab{
