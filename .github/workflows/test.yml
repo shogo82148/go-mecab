@@ -90,5 +90,5 @@ jobs:
       - name: test
         run: |
           go version
-          go test -v -race ./...
+          go test -v ./...
         shell: msys2 {0}
