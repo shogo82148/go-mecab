@@ -15,7 +15,7 @@ curl -o mecab.tar.gz -sSL "https://github.com/shogo82148/mecab/releases/download
 tar zxfv mecab.tar.gz
 cd "mecab-$MECAB_VERSION"
 ./configure --enable-utf8-only
-make
+make -j2
 make check
 sudo make install
 
