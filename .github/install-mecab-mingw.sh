@@ -14,7 +14,7 @@ cd "$TMPDIR"
 curl -o mecab.tar.gz -sSL "https://github.com/shogo82148/mecab/releases/download/v$MECAB_VERSION/mecab-$MECAB_VERSION.tar.gz"
 tar zxfv mecab.tar.gz
 cd "mecab-$MECAB_VERSION"
-./configure --enable-utf8-only
+./configure --enable-utf8-only --host=x86_64-w64-mingw32
 make -j2
 make check
 sudo make install
