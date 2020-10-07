@@ -2,12 +2,18 @@ package mecab_test
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/shogo82148/go-mecab"
 )
 
 func ExampleMeCab_Parse() {
-	tagger, err := mecab.New(map[string]string{})
+	options := map[string]string{}
+	if path := os.Getenv("MECABRC_PATH"); path != "" {
+		options["rcfile"] = path
+	}
+
+	tagger, err := mecab.New(options)
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +31,12 @@ func ExampleMeCab_Parse() {
 }
 
 func ExampleMeCab_ParseLattice() {
-	tagger, err := mecab.New(map[string]string{})
+	options := map[string]string{}
+	if path := os.Getenv("MECABRC_PATH"); path != "" {
+		options["rcfile"] = path
+	}
+
+	tagger, err := mecab.New(options)
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +60,12 @@ func ExampleMeCab_ParseLattice() {
 }
 
 func ExampleMeCab_ParseToNode() {
-	tagger, err := mecab.New(map[string]string{})
+	options := map[string]string{}
+	if path := os.Getenv("MECABRC_PATH"); path != "" {
+		options["rcfile"] = path
+	}
+
+	tagger, err := mecab.New(options)
 	if err != nil {
 		panic(err)
 	}
