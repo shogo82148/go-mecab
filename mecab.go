@@ -39,8 +39,8 @@ func New(args map[string]string) (MeCab, error) {
 		opts = append(opts, opt)
 	}
 
-	// C.mecab_model_new sets an error in the thread local storage.
-	// so C.mecab_model_new and C.mecab_strerror must be call in same thread.
+	// C.mecab_new sets an error in the thread local storage.
+	// so C.mecab_new and C.mecab_strerror must be call in same thread.
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
