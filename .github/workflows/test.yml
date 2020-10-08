@@ -60,3 +60,33 @@ jobs:
         run: |
           go version
           go test -v -race ./...
+
+  mingw:
+    strategy:
+      matrix:
+        go:
+          - "1"
+          - "1.15"
+          - "1.14"
+          - "1.13"
+          - "1.12"
+      fail-fast: false
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup Go ${{ matrix.go }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+      - uses: msys2/setup-msys2@v2
+        with:
+          install: autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool mingw-w64-x86_64-libiconv
+
+      - name: install mecab
+        run: |
+          .github/install-mecab-mingw.sh
+        shell: msys2 {0}
+      - name: test
+        run: |
+          go version
+          go test -v ./...

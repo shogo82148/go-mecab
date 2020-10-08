@@ -6,6 +6,7 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"runtime"
 	"unsafe"
 )
 
@@ -36,10 +37,15 @@ func NewModel(args map[string]string) (Model, error) {
 		opts = append(opts, opt)
 	}
 
+	// C.mecab_model_new sets an error in the thread local storage.
+	// so C.mecab_model_new and C.mecab_strerror must be call in same thread.
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
 	// create new MeCab model
 	model := C.mecab_model_new(C.int(len(opts)), (**C.char)(&opts[0]))
 	if model == nil {
-		return Model{}, errors.New("mecab: mecab_model is not created")
+		return Model{}, errors.New(C.GoString(C.mecab_strerror(nil)))
 	}
 
 	return Model{

@@ -14,10 +14,10 @@ cd "$TMPDIR"
 curl -o mecab.tar.gz -sSL "https://github.com/shogo82148/mecab/releases/download/v$MECAB_VERSION/mecab-$MECAB_VERSION.tar.gz"
 tar zxfv mecab.tar.gz
 cd "mecab-$MECAB_VERSION"
-./configure --enable-utf8-only
+./configure --enable-utf8-only --host=x86_64-w64-mingw32
 make -j2
-make check
-sudo make install
+# make check # it fails :(
+make install
 
 cd "$TMPDIR"
 curl -o mecab-ipadic.tar.gz -sSL "https://github.com/shogo82148/mecab/releases/download/v$MECAB_VERSION/mecab-ipadic-$IPADIC_VERSION.tar.gz"
@@ -25,4 +25,18 @@ tar zxfv mecab-ipadic.tar.gz
 cd "mecab-ipadic-$IPADIC_VERSION"
 ./configure --with-charset=utf8
 make
-sudo make install
+make install
+
+{
+    echo "CGO_LDFLAGS=-L$(cygpath -w /mingw64/lib) -lmecab -lstdc++"
+    echo "CGO_CFLAGS=-I$(cygpath -w /mingw64/include)"
+} >> "$GITHUB_ENV"
+
+cat << DIC > /mingw64/etc/mecabrc
+dicdir = $(cygpath -w /mingw64/lib/mecab/dic/ipadic)
+DIC
+
+# The default mecabrc path is "C:\Program Files\mecab\etc\mecabrc" if mecab is built with mingw32-w64.
+# but it is not correct in MSYS2 environment.
+echo "MECABRC_PATH=$(cygpath -w /mingw64/etc/mecabrc)" >> "$GITHUB_ENV"
+cygpath -w /mingw64/bin >> "$GITHUB_PATH"

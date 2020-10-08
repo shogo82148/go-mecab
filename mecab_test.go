@@ -1,9 +1,31 @@
 package mecab
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
+
+var mecabrcPath string
+
+func init() {
+	// get mecabrc path from mecab-config from the environment value.
+	if path := os.Getenv("MECABRC_PATH"); path != "" {
+		mecabrcPath = path
+	}
+}
+
+func rcfile(config map[string]string) map[string]string {
+	if mecabrcPath != "" {
+		config["rcfile"] = mecabrcPath
+	}
+	return config
+}
 
 func TestNewMeCab(t *testing.T) {
-	mecab, err := New(map[string]string{"output-format-type": "wakati", "all-morphs": ""})
+	mecab, err := New(rcfile(map[string]string{
+		"output-format-type": "wakati",
+		"all-morphs": "",
+	}))
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 		return
@@ -12,7 +34,9 @@ func TestNewMeCab(t *testing.T) {
 }
 
 func TestParse(t *testing.T) {
-	mecab, err := New(map[string]string{"output-format-type": "wakati"})
+	mecab, err := New(rcfile(map[string]string{
+		"output-format-type": "wakati",
+	}))
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 		return
@@ -31,7 +55,9 @@ func TestParse(t *testing.T) {
 }
 
 func BenchmarkParse(b *testing.B) {
-	mecab, _ := New(map[string]string{"output-format-type": "wakati"})
+	mecab, _ := New(rcfile(map[string]string{
+		"output-format-type": "wakati",
+	}))
 	defer mecab.Destroy()
 
 	for i := 0; i < b.N; i++ {
@@ -40,7 +66,9 @@ func BenchmarkParse(b *testing.B) {
 }
 
 func TestParseLattice(t *testing.T) {
-	mecab, err := New(map[string]string{"output-format-type": "wakati"})
+	mecab, err := New(rcfile(map[string]string{
+		"output-format-type": "wakati",
+	}))
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 		return
@@ -69,7 +97,9 @@ func TestParseLattice(t *testing.T) {
 }
 
 func BenchmarkParseLattice(b *testing.B) {
-	mecab, _ := New(map[string]string{"output-format-type": "wakati"})
+	mecab, _ := New(rcfile(map[string]string{
+		"output-format-type": "wakati",
+	}))
 	defer mecab.Destroy()
 
 	lattice, _ := NewLattice()
@@ -83,7 +113,8 @@ func BenchmarkParseLattice(b *testing.B) {
 }
 
 func TestParseToNode(t *testing.T) {
-	mecab, err := New(map[string]string{})
+	mecab, err := New(rcfile(map[string]string{
+	}))
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 		return
@@ -109,7 +140,8 @@ func TestParseToNode(t *testing.T) {
 }
 
 func BenchmarkParseToNode(b *testing.B) {
-	mecab, _ := New(map[string]string{})
+	mecab, _ := New(rcfile(map[string]string{
+	}))
 	defer mecab.Destroy()
 
 	// XXX: avoid GC, MeCab 0.996 has GC problem (see https://github.com/taku910/mecab/pull/24)

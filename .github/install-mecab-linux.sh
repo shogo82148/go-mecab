@@ -7,7 +7,7 @@ set -uxe
 TMPDIR=$(mktemp -d)
 trap 'rm -rfv "$TMPDIR"' EXIT
 
-MECAB_VERSION=0.996.2
+MECAB_VERSION=0.996.4
 IPADIC_VERSION=2.7.0-20070801
 # install mecab
 cd "$TMPDIR"
@@ -15,7 +15,7 @@ curl -o mecab.tar.gz -sSL "https://github.com/shogo82148/mecab/releases/download
 tar zxfv mecab.tar.gz
 cd "mecab-$MECAB_VERSION"
 ./configure --enable-utf8-only
-make
+make -j2
 make check
 sudo make install
 sudo ldconfig

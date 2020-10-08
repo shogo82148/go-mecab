@@ -3,7 +3,9 @@ package mecab
 import "testing"
 
 func TestModel(t *testing.T) {
-	model, err := NewModel(map[string]string{"output-format-type": "wakati"})
+	model, err := NewModel(rcfile(map[string]string{
+		"output-format-type": "wakati",
+	}))
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 		return
