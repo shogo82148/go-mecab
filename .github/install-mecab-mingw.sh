@@ -32,4 +32,5 @@ echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
 
 # The default mecabrc path is "C:\Program Files\mecab\etc\mecabrc" if mecab is built with mingw32-w64.
 # but it is not correct in MSYS2 environment.
-echo "MECABRC_PATH=/mingw64/etc/mecabrc" >> "$GITHUB_ENV"
+echo "MECABRC_PATH=C:\msys64\mingw64\etc\mecabrc" >> "$GITHUB_ENV"
+echo "C:\msys64\mingw64\bin" >> "$GITHUB_PATH"
