@@ -32,7 +32,7 @@ make install
     echo "CGO_CFLAGS=-I$(cygpath -w /mingw64/include)"
 } >> "$GITHUB_ENV"
 
-cat << "DIC" > /mingw64/etc/mecabrc
+cat << DIC > /mingw64/etc/mecabrc
 dicdir = $(cygpath -w /mingw64/lib/mecab/dic/ipadic)
 DIC
 
