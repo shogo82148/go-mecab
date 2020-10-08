@@ -32,6 +32,8 @@ make install
     echo "CGO_CFLAGS=-I$(cygpath -w /mingw64/include)"
 } >> "$GITHUB_ENV"
 
+cat /mingw64/lib/mecab/dic/ipadic/dicrc
+
 # The default mecabrc path is "C:\Program Files\mecab\etc\mecabrc" if mecab is built with mingw32-w64.
 # but it is not correct in MSYS2 environment.
 echo "MECABRC_PATH=$(cygpath -w /mingw64/etc/mecabrc)" >> "$GITHUB_ENV"
