@@ -32,25 +32,8 @@ make install
     echo "CGO_CFLAGS=-I$(cygpath -w /mingw64/include)"
 } >> "$GITHUB_ENV"
 
-cat << "DIC" > /mingw64/lib/mecab/dic/ipadic/dicrc
-;
-; Configuration file of IPADIC
-;
-; $Id: dicrc,v 1.4 2006/04/08 06:41:36 taku-ku Exp $;
-;
-
+cat << "DIC" > /mingw64/etc/mecabrc
 dicdir = $(cygpath -w /mingw64/lib/mecab/dic/ipadic)
-
-cost-factor = 800
-bos-feature = BOS/EOS,*,*,*,*,*,*,*,*
-eval-size = 8
-unk-eval-size = 4
-config-charset = EUC-JP
-
-; yomi
-node-format-yomi = %pS%f[7]
-unk-format-yomi = %M
-eos-format-yomi  = \\n
 DIC
 
 # The default mecabrc path is "C:\Program Files\mecab\etc\mecabrc" if mecab is built with mingw32-w64.
