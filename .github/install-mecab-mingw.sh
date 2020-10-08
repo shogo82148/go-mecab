@@ -28,7 +28,7 @@ make
 make install
 
 {
-    echo "CGO_LDFLAGS=C:\\msys64\\lib"
+    echo "CGO_LDFLAGS=-LC:\\msys64\\lib -lmecab -lstdc++"
     echo "CGO_CFLAGS=-IC:\\msys64\\include"
 } >> "$GITHUB_ENV"
 
