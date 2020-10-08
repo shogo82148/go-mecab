@@ -28,8 +28,8 @@ make
 make install
 
 {
-    echo "CGO_LDFLAGS=-LC:\\msys64\\lib -lmecab -lstdc++"
-    echo "CGO_CFLAGS=-IC:\\msys64\\include"
+    echo "CGO_LDFLAGS=-L$(cygpath -w /mingw64/lib) -lmecab -lstdc++"
+    echo "CGO_CFLAGS=-I$(cygpath -w /msys64/include)"
 } >> "$GITHUB_ENV"
 
 # The default mecabrc path is "C:\Program Files\mecab\etc\mecabrc" if mecab is built with mingw32-w64.
