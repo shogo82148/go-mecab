@@ -27,8 +27,10 @@ cd "mecab-ipadic-$IPADIC_VERSION"
 make
 make install
 
-echo "CGO_LDFLAGS=$(mecab-config --libs)" >> "$GITHUB_ENV"
-echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
+{
+    echo "CGO_LDFLAGS=C:\\msys64\\lib"
+    echo "CGO_CFLAGS=-IC:\\msys64\\include"
+} >> "$GITHUB_ENV"
 
 # The default mecabrc path is "C:\Program Files\mecab\etc\mecabrc" if mecab is built with mingw32-w64.
 # but it is not correct in MSYS2 environment.
