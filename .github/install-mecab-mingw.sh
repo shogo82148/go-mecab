@@ -29,10 +29,10 @@ make install
 
 {
     echo "CGO_LDFLAGS=-L$(cygpath -w /mingw64/lib) -lmecab -lstdc++"
-    echo "CGO_CFLAGS=-I$(cygpath -w /msys64/include)"
+    echo "CGO_CFLAGS=-I$(cygpath -w /mingw64/include)"
 } >> "$GITHUB_ENV"
 
 # The default mecabrc path is "C:\Program Files\mecab\etc\mecabrc" if mecab is built with mingw32-w64.
 # but it is not correct in MSYS2 environment.
-echo "MECABRC_PATH=C:\msys64\mingw64\etc\mecabrc" >> "$GITHUB_ENV"
-echo "C:\msys64\mingw64\bin" >> "$GITHUB_PATH"
+echo "MECABRC_PATH=$(cygpath -w /mingw64/etc/mecabrc)" >> "$GITHUB_ENV"
+cygpath -w /mingw64/bin >> "$GITHUB_PATH"
