@@ -2,6 +2,7 @@ package mecab
 
 import (
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -31,6 +32,19 @@ func TestNewMeCab(t *testing.T) {
 		return
 	}
 	defer mecab.Destroy()
+}
+
+func TestNewMeCab_error(t *testing.T) {
+	_, err := New(rcfile(map[string]string{
+		"output-format-type": "unknown format",
+	}))
+	if err == nil {
+		t.Errorf("expected error, but not")
+		return
+	}
+	if !strings.Contains(err.Error(), "unknown format type [unknown format]") {
+		t.Errorf("want %q error, got %q", "unknown format type [unknown format]", err.Error())
+	}
 }
 
 func TestParse(t *testing.T) {
