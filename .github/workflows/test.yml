@@ -6,6 +6,10 @@ on:
     branches:
       - main
 
+env:
+  MECAB_VERSION: "0.996.5"
+  IPADIC_VERSION: "2.7.0-20070801"
+
 jobs:
   linux:
     strategy:
@@ -20,11 +24,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}/mecab
+          key: ${{ runner.os }}-${{ env.MECAB_VERSION }}-${{ env.IPADIC_VERSION }}-${{ hashFiles('.github/*-linux.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.MECAB_VERSION }}-${{ env.IPADIC_VERSION }}-
       - name: install mecab
         run: |
           .github/install-mecab-linux.sh
-          echo "CGO_LDFLAGS=$(mecab-config --libs)" >> "$GITHUB_ENV"
-          echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
       - name: setup Go ${{ matrix.go }}
         uses: actions/setup-go@v2
         with:
@@ -47,11 +56,16 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}/mecab
+          key: ${{ runner.os }}-${{ env.MECAB_VERSION }}-${{ env.IPADIC_VERSION }}-${{ hashFiles('.github/*-darwin.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.MECAB_VERSION }}-${{ env.IPADIC_VERSION }}-
       - name: install mecab
         run: |
           .github/install-mecab-darwin.sh
-          echo "CGO_LDFLAGS=$(mecab-config --libs)" >> "$GITHUB_ENV"
-          echo "CGO_CFLAGS=-I$(mecab-config --inc-dir)" >> "$GITHUB_ENV"
       - name: setup Go ${{ matrix.go }}
         uses: actions/setup-go@v2
         with:
@@ -74,6 +88,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}/mecab
+          key: ${{ runner.os }}-${{ env.MECAB_VERSION }}-${{ env.IPADIC_VERSION }}-${{ hashFiles('.github/*-mingw.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.MECAB_VERSION }}-${{ env.IPADIC_VERSION }}-
       - name: setup Go ${{ matrix.go }}
         uses: actions/setup-go@v2
         with:
