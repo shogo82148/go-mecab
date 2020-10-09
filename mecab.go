@@ -5,7 +5,6 @@ package mecab
 import "C"
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 	"runtime"
@@ -47,7 +46,7 @@ func New(args map[string]string) (MeCab, error) {
 	// create new MeCab
 	mecab := C.mecab_new(C.int(len(opts)), (**C.char)(&opts[0]))
 	if mecab == nil {
-		return MeCab{}, errors.New(C.GoString(C.mecab_strerror(nil)))
+		return MeCab{}, newError(nil)
 	}
 
 	return MeCab{
@@ -71,7 +70,7 @@ func (m MeCab) Parse(s string) (string, error) {
 
 	result := C.mecab_sparse_tostr2(m.mecab, input, length)
 	if result == nil {
-		return "", m.Error()
+		return "", newError(m.mecab)
 	}
 	runtime.KeepAlive(s)
 	return C.GoString(result), nil
@@ -85,7 +84,7 @@ func (m MeCab) ParseToString(s string) (string, error) {
 // ParseLattice parses the lattice and returns the result as string.
 func (m MeCab) ParseLattice(lattice Lattice) error {
 	if C.mecab_parse_lattice(m.mecab, lattice.lattice) == 0 {
-		return errors.New("parse error")
+		return newError(m.mecab)
 	}
 	return nil
 }
@@ -101,12 +100,12 @@ func (m MeCab) ParseToNode(s string) (Node, error) {
 
 	node := C.mecab_sparse_tonode2(m.mecab, input, length)
 	if node == nil {
-		return Node{}, m.Error()
+		return Node{}, newError(m.mecab)
 	}
 	runtime.KeepAlive(s)
 	return Node{node: node}, nil
 }
 
 func (m MeCab) Error() error {
-	return errors.New(C.GoString(C.mecab_strerror(m.mecab)))
+	return newError(m.mecab)
 }

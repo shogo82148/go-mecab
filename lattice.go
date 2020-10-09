@@ -4,8 +4,8 @@ package mecab
 // #include <stdlib.h>
 import "C"
 import (
-	"errors"
 	"reflect"
+	"runtime"
 	"unsafe"
 )
 
@@ -16,10 +16,14 @@ type Lattice struct {
 
 // NewLattice creates new lattice.
 func NewLattice() (Lattice, error) {
-	lattice := C.mecab_lattice_new()
+	// C.mecab_lattice_new sets an error in the thread local storage.
+	// so C.mecab_lattice_new and C.mecab_strerror must be call in same thread.
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
 
+	lattice := C.mecab_lattice_new()
 	if lattice == nil {
-		return Lattice{}, errors.New("mecab: mecab_lattice is not created")
+		return Lattice{}, newError(nil)
 	}
 	return Lattice{lattice: lattice}, nil
 }
