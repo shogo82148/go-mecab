@@ -4,7 +4,6 @@ package mecab
 // #include <stdlib.h>
 import "C"
 import (
-	"errors"
 	"fmt"
 	"runtime"
 	"unsafe"
@@ -45,7 +44,7 @@ func NewModel(args map[string]string) (Model, error) {
 	// create new MeCab model
 	model := C.mecab_model_new(C.int(len(opts)), (**C.char)(&opts[0]))
 	if model == nil {
-		return Model{}, errors.New(C.GoString(C.mecab_strerror(nil)))
+		return Model{}, newError(nil)
 	}
 
 	return Model{
@@ -60,23 +59,39 @@ func (m Model) Destroy() {
 
 // NewMeCab returns a new mecab.
 func (m Model) NewMeCab() (MeCab, error) {
+	// C.mecab_model_new_tagger sets an error in the thread local storage.
+	// so C.mecab_model_new_tagger and C.mecab_strerror must be call in same thread.
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
 	mecab := C.mecab_model_new_tagger(m.model)
 	if mecab == nil {
-		return MeCab{}, errors.New("mecab: mecab is not created")
+		return MeCab{}, newError(nil)
 	}
 	return MeCab{mecab: mecab}, nil
 }
 
 // NewLattice returns a new lattice.
 func (m Model) NewLattice() (Lattice, error) {
+	// C.mecab_model_new_lattice sets an error in the thread local storage.
+	// so C.mecab_model_new_lattice and C.mecab_strerror must be call in same thread.
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
 	lattice := C.mecab_model_new_lattice(m.model)
 	if lattice == nil {
-		return Lattice{}, errors.New("mecab: lattice is not created")
+		return Lattice{}, newError(nil)
 	}
 	return Lattice{lattice: lattice}, nil
 }
 
 // Swap replaces the model by the other model.
-func (m Model) Swap(m2 Model) {
+func (m Model) Swap(m2 Model) error {
+	// C.mecab_model_swap sets an error in the thread local storage.
+	// so C.mecab_model_swap and C.mecab_strerror must be call in same thread.
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
 	C.mecab_model_swap(m.model, m2.model)
+	return newError(nil)
 }
