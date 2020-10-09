@@ -1,5 +1,7 @@
 package mecab
 
+import "C"
+
 // Error is an error of MeCab.
 type Error struct {
 	err string
