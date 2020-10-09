@@ -1,5 +1,6 @@
 package mecab
 
+// #include <mecab.h>
 import "C"
 
 // Error is an error of MeCab.
