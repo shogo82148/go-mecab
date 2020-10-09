@@ -37,7 +37,7 @@ $ go get github.com/shogo82148/go-mecab
 
 ## SEE ALSO
 
-- [godoc on pkg.go.dev](https://pkg.go.dev/badge/github.com/shogo82148/go-mecab)
+- [godoc on pkg.go.dev](https://pkg.go.dev/github.com/shogo82148/go-mecab)
 - [MeCab](http://taku910.github.io/mecab/)
 - [MeCab repository](https://github.com/taku910/mecab)
 - [Unofficial fork of taku910/mecab](https://shogo82148.github.io/mecab)
