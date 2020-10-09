@@ -7,7 +7,7 @@ set -uxe
 TMPDIR=$(mktemp -d)
 trap 'rm -rfv "$TMPDIR"' EXIT
 
-MECAB_VERSION=0.996.4
+MECAB_VERSION=0.996.5
 IPADIC_VERSION=2.7.0-20070801
 # install mecab
 cd "$TMPDIR"
