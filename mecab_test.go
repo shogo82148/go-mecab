@@ -25,7 +25,7 @@ func rcfile(config map[string]string) map[string]string {
 func TestNewMeCab(t *testing.T) {
 	mecab, err := New(rcfile(map[string]string{
 		"output-format-type": "wakati",
-		"all-morphs": "",
+		"all-morphs":         "",
 	}))
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -127,8 +127,7 @@ func BenchmarkParseLattice(b *testing.B) {
 }
 
 func TestParseToNode(t *testing.T) {
-	mecab, err := New(rcfile(map[string]string{
-	}))
+	mecab, err := New(rcfile(map[string]string{}))
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 		return
@@ -154,8 +153,7 @@ func TestParseToNode(t *testing.T) {
 }
 
 func BenchmarkParseToNode(b *testing.B) {
-	mecab, _ := New(rcfile(map[string]string{
-	}))
+	mecab, _ := New(rcfile(map[string]string{}))
 	defer mecab.Destroy()
 
 	// XXX: avoid GC, MeCab 0.996 has GC problem (see https://github.com/taku910/mecab/pull/24)

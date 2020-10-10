@@ -11,9 +11,34 @@ import (
 	"unsafe"
 )
 
+// to introduce garbage-collection while maintaining backwards compatibility.
+type mecab struct {
+	mecab *C.mecab_t
+}
+
+func newMeCab(m *C.mecab_t) *mecab {
+	ret := &mecab{
+		mecab: m,
+	}
+	runtime.SetFinalizer(ret, finalizeMeCab)
+	return ret
+}
+
+// It is a marker that a mecab must not be copied after the first use.
+// See https://github.com/golang/go/issues/8005#issuecomment-190753527
+// for details.
+func (*mecab) Lock() {}
+
+func finalizeMeCab(m *mecab) {
+	if m.mecab != nil {
+		C.mecab_destroy(m.mecab)
+	}
+	m.mecab = nil
+}
+
 // MeCab is a morphological parser.
 type MeCab struct {
-	mecab *C.mecab_t
+	m *mecab
 }
 
 // New returns new MeCab parser.
@@ -44,19 +69,20 @@ func New(args map[string]string) (MeCab, error) {
 	defer runtime.UnlockOSThread()
 
 	// create new MeCab
-	mecab := C.mecab_new(C.int(len(opts)), (**C.char)(&opts[0]))
-	if mecab == nil {
+	m := C.mecab_new(C.int(len(opts)), (**C.char)(&opts[0]))
+	if m == nil {
 		return MeCab{}, newError(nil)
 	}
 
 	return MeCab{
-		mecab: mecab,
+		m: newMeCab(m),
 	}, nil
 }
 
 // Destroy frees the MeCab parser.
 func (m MeCab) Destroy() {
-	C.mecab_destroy(m.mecab)
+	C.mecab_destroy(m.m.mecab)
+	m.m.mecab = nil
 }
 
 // Parse parses the string and returns the result as string
@@ -68,11 +94,12 @@ func (m MeCab) Parse(s string) (string, error) {
 	header := (*reflect.StringHeader)(unsafe.Pointer(&s))
 	input := (*C.char)(unsafe.Pointer(header.Data))
 
-	result := C.mecab_sparse_tostr2(m.mecab, input, length)
+	result := C.mecab_sparse_tostr2(m.m.mecab, input, length)
 	if result == nil {
-		return "", newError(m.mecab)
+		return "", newError(m.m.mecab)
 	}
 	runtime.KeepAlive(s)
+	runtime.KeepAlive(m.m)
 	return C.GoString(result), nil
 }
 
@@ -83,9 +110,10 @@ func (m MeCab) ParseToString(s string) (string, error) {
 
 // ParseLattice parses the lattice and returns the result as string.
 func (m MeCab) ParseLattice(lattice Lattice) error {
-	if C.mecab_parse_lattice(m.mecab, lattice.lattice) == 0 {
-		return newError(m.mecab)
+	if C.mecab_parse_lattice(m.m.mecab, lattice.l.lattice) == 0 {
+		return newError(m.m.mecab)
 	}
+	runtime.KeepAlive(m.m)
 	return nil
 }
 
@@ -98,14 +126,17 @@ func (m MeCab) ParseToNode(s string) (Node, error) {
 	header := (*reflect.StringHeader)(unsafe.Pointer(&s))
 	input := (*C.char)(unsafe.Pointer(header.Data))
 
-	node := C.mecab_sparse_tonode2(m.mecab, input, length)
+	node := C.mecab_sparse_tonode2(m.m.mecab, input, length)
 	if node == nil {
-		return Node{}, newError(m.mecab)
+		return Node{}, newError(m.m.mecab)
 	}
 	runtime.KeepAlive(s)
-	return Node{node: node}, nil
+	return Node{
+		node:  node,
+		mecab: m.m,
+	}, nil
 }
 
 func (m MeCab) Error() error {
-	return newError(m.mecab)
+	return newError(m.m.mecab)
 }

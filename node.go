@@ -7,6 +7,11 @@ import "C"
 // Node is a node in a lattice.
 type Node struct {
 	node *C.mecab_node_t
+
+	// actual data of node is stored in mecab or lattice.
+	// they are here to avoid garbase collection.
+	mecab   *mecab
+	lattice *lattice
 }
 
 // NodeStat is status of a node.
@@ -82,12 +87,20 @@ func (node Node) Next() Node {
 
 // ENext resturns a node which ends same position
 func (node Node) ENext() Node {
-	return Node{node: (*C.mecab_node_t)(node.node.enext)}
+	return Node{
+		node:    (*C.mecab_node_t)(node.node.enext),
+		mecab:   node.mecab,
+		lattice: node.lattice,
+	}
 }
 
 // BNext resturns a node which begins same position
 func (node Node) BNext() Node {
-	return Node{node: (*C.mecab_node_t)(node.node.bnext)}
+	return Node{
+		node:    (*C.mecab_node_t)(node.node.bnext),
+		mecab:   node.mecab,
+		lattice: node.lattice,
+	}
 }
 
 // Stat returns the type of Node.
