@@ -9,9 +9,34 @@ import (
 	"unsafe"
 )
 
+// to introduce garbage-collection while maintaining backwards compatibility.
+type model struct {
+	model *C.mecab_model_t
+}
+
+func newModel(m *C.mecab_model_t) *model {
+	ret := &model{
+		model: m,
+	}
+	runtime.SetFinalizer(ret, finalizeModel)
+	return ret
+}
+
+// It is a marker that a model must not be copied after the first use.
+// See https://github.com/golang/go/issues/8005#issuecomment-190753527
+// for details.
+func (*model) Lock() {}
+
+func finalizeModel(m *model) {
+	if m.model != nil {
+		C.mecab_model_destroy(m.model)
+	}
+	m.model = nil
+}
+
 // Model is a dictionary model of MeCab.
 type Model struct {
-	model *C.mecab_model_t
+	m *model
 }
 
 // NewModel returns a new model.
@@ -42,19 +67,20 @@ func NewModel(args map[string]string) (Model, error) {
 	defer runtime.UnlockOSThread()
 
 	// create new MeCab model
-	model := C.mecab_model_new(C.int(len(opts)), (**C.char)(&opts[0]))
-	if model == nil {
+	m := C.mecab_model_new(C.int(len(opts)), (**C.char)(&opts[0]))
+	if m == nil {
 		return Model{}, newError(nil)
 	}
 
 	return Model{
-		model: model,
+		m: newModel(m),
 	}, nil
 }
 
 // Destroy frees the model.
 func (m Model) Destroy() {
-	C.mecab_model_destroy(m.model)
+	C.mecab_model_destroy(m.m.model)
+	m.m.model = nil
 }
 
 // NewMeCab returns a new mecab.
@@ -64,11 +90,12 @@ func (m Model) NewMeCab() (MeCab, error) {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	mecab := C.mecab_model_new_tagger(m.model)
-	if mecab == nil {
+	mm := C.mecab_model_new_tagger(m.m.model)
+	if mm == nil {
 		return MeCab{}, newError(nil)
 	}
-	return MeCab{mecab: mecab}, nil
+	runtime.KeepAlive(m.m)
+	return MeCab{m: newMeCab(mm)}, nil
 }
 
 // NewLattice returns a new lattice.
@@ -78,11 +105,11 @@ func (m Model) NewLattice() (Lattice, error) {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	lattice := C.mecab_model_new_lattice(m.model)
+	lattice := C.mecab_model_new_lattice(m.m.model)
 	if lattice == nil {
 		return Lattice{}, newError(nil)
 	}
-	return Lattice{lattice: lattice}, nil
+	return Lattice{l: newLattice(lattice)}, nil
 }
 
 // Swap replaces the model by the other model.
@@ -92,6 +119,6 @@ func (m Model) Swap(m2 Model) error {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	C.mecab_model_swap(m.model, m2.model)
+	C.mecab_model_swap(m.m.model, m2.m.model)
 	return newError(nil)
 }
