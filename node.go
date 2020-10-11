@@ -22,16 +22,16 @@ const (
 	NormalNode NodeStat = 0
 
 	// UnknownNode is status for unknown node.
-	UnknownNode = 1
+	UnknownNode NodeStat = 1
 
 	// BOSNode is status for BOS(Begin Of Sentence) node.
-	BOSNode = 2
+	BOSNode NodeStat = 2
 
 	// EOSNode is status for EOS(End Of Sentence) node.
-	EOSNode = 3
+	EOSNode NodeStat = 3
 
 	// EONNode is status for EON(End Of Node) node.
-	EONNode = 4
+	EONNode NodeStat = 4
 )
 
 func (stat NodeStat) String() string {

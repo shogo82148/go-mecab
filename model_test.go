@@ -1,6 +1,7 @@
 package mecab
 
 import (
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -44,4 +45,13 @@ func TestNewModel_error(t *testing.T) {
 	if !strings.Contains(err.Error(), "unknown format type [unknown format]") {
 		t.Errorf("want %q error, got %q", "unknown format type [unknown format]", err.Error())
 	}
+}
+
+func TestModelFinalizer(t *testing.T) {
+	for i := 0; i < 10000; i++ {
+		NewModel(rcfile(map[string]string{}))
+	}
+	runtime.GC()
+	runtime.GC()
+	runtime.GC()
 }
