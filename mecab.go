@@ -5,11 +5,14 @@ package mecab
 import "C"
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"runtime"
 	"unsafe"
 )
+
+var errMeCabNotAvailable = errors.New("mecab: mecab is not available")
 
 // to introduce garbage-collection while maintaining backwards compatibility.
 type mecab struct {
@@ -82,12 +85,17 @@ func New(args map[string]string) (MeCab, error) {
 // Destroy frees the MeCab parser.
 func (m MeCab) Destroy() {
 	runtime.SetFinalizer(m.m, nil) // clear the finalizer
-	C.mecab_destroy(m.m.mecab)
+	if m.m.mecab != nil {
+		C.mecab_destroy(m.m.mecab)
+	}
 	m.m.mecab = nil
 }
 
 // Parse parses the string and returns the result as string
 func (m MeCab) Parse(s string) (string, error) {
+	if m.m.mecab == nil {
+		panic(errMeCabNotAvailable)
+	}
 	length := C.size_t(len(s))
 	if s == "" {
 		s = "dummy"
@@ -106,11 +114,17 @@ func (m MeCab) Parse(s string) (string, error) {
 
 // ParseToString is alias of Parse
 func (m MeCab) ParseToString(s string) (string, error) {
+	if m.m.mecab == nil {
+		panic(errMeCabNotAvailable)
+	}
 	return m.Parse(s)
 }
 
 // ParseLattice parses the lattice and returns the result as string.
 func (m MeCab) ParseLattice(lattice Lattice) error {
+	if m.m.mecab == nil {
+		panic(errMeCabNotAvailable)
+	}
 	if C.mecab_parse_lattice(m.m.mecab, lattice.l.lattice) == 0 {
 		return newError(m.m.mecab)
 	}
@@ -120,6 +134,9 @@ func (m MeCab) ParseLattice(lattice Lattice) error {
 
 // ParseToNode parses the string and returns the result as Node
 func (m MeCab) ParseToNode(s string) (Node, error) {
+	if m.m.mecab == nil {
+		panic(errMeCabNotAvailable)
+	}
 	length := C.size_t(len(s))
 	if s == "" {
 		s = "dummy"
@@ -139,5 +156,8 @@ func (m MeCab) ParseToNode(s string) (Node, error) {
 }
 
 func (m MeCab) Error() error {
+	if m.m.mecab == nil {
+		panic(errMeCabNotAvailable)
+	}
 	return newError(m.m.mecab)
 }

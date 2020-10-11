@@ -4,10 +4,13 @@ package mecab
 // #include <stdlib.h>
 import "C"
 import (
+	"errors"
 	"reflect"
 	"runtime"
 	"unsafe"
 )
+
+var errLatticeNotAvailable = errors.New("mecab: lattice is not available")
 
 type lattice struct {
 	lattice *C.mecab_lattice_t
@@ -55,23 +58,36 @@ func NewLattice() (Lattice, error) {
 // Destroy frees the lattice.
 func (l Lattice) Destroy() {
 	runtime.SetFinalizer(l.l, nil) // clear the finalizer
-	C.mecab_lattice_destroy(l.l.lattice)
+	if l.l.lattice != nil {
+		C.mecab_lattice_destroy(l.l.lattice)
+	}
 	l.l.lattice = nil
 }
 
 // Clear set empty string to the lattice.
 func (l Lattice) Clear() {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
 	C.mecab_lattice_clear(l.l.lattice)
 	runtime.KeepAlive(l.l)
 }
 
 // IsAvailable returns the lattice is available.
 func (l Lattice) IsAvailable() bool {
-	return C.mecab_lattice_is_available(l.l.lattice) != 0
+	if l.l.lattice == nil {
+		return false
+	}
+	available := C.mecab_lattice_is_available(l.l.lattice) != 0
+	runtime.KeepAlive(l.l)
+	return available
 }
 
 // BOSNode returns the Begin Of Sentence node.
 func (l Lattice) BOSNode() Node {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
 	return Node{
 		node:    C.mecab_lattice_get_bos_node(l.l.lattice),
 		lattice: l.l,
@@ -80,6 +96,9 @@ func (l Lattice) BOSNode() Node {
 
 // EOSNode returns the End Of Sentence node.
 func (l Lattice) EOSNode() Node {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
 	return Node{
 		node:    C.mecab_lattice_get_eos_node(l.l.lattice),
 		lattice: l.l,
@@ -88,6 +107,9 @@ func (l Lattice) EOSNode() Node {
 
 // Sentence returns the sentence in the lattice.
 func (l Lattice) Sentence() string {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
 	s := C.GoString(C.mecab_lattice_get_sentence(l.l.lattice))
 	runtime.KeepAlive(l.l)
 	return s
@@ -95,6 +117,9 @@ func (l Lattice) Sentence() string {
 
 // SetSentence set the sentence in the lattice.
 func (l Lattice) SetSentence(s string) {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
 	length := C.size_t(len(s))
 	if s == "" {
 		s = "dummy"
@@ -108,5 +133,10 @@ func (l Lattice) SetSentence(s string) {
 }
 
 func (l Lattice) String() string {
-	return C.GoString(C.mecab_lattice_tostr(l.l.lattice))
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
+	s := C.GoString(C.mecab_lattice_tostr(l.l.lattice))
+	runtime.KeepAlive(l.l)
+	return s
 }

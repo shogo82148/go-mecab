@@ -4,10 +4,13 @@ package mecab
 // #include <stdlib.h>
 import "C"
 import (
+	"errors"
 	"fmt"
 	"runtime"
 	"unsafe"
 )
+
+var errModelNotAvailable = errors.New("mecab: model is not available")
 
 // to introduce garbage-collection while maintaining backwards compatibility.
 type model struct {
@@ -80,12 +83,18 @@ func NewModel(args map[string]string) (Model, error) {
 // Destroy frees the model.
 func (m Model) Destroy() {
 	runtime.SetFinalizer(m.m, nil) // clear the finalizer
-	C.mecab_model_destroy(m.m.model)
+	if m.m.model != nil {
+		C.mecab_model_destroy(m.m.model)
+	}
 	m.m.model = nil
 }
 
 // NewMeCab returns a new mecab.
 func (m Model) NewMeCab() (MeCab, error) {
+	if m.m.model == nil {
+		panic(errModelNotAvailable)
+	}
+
 	// C.mecab_model_new_tagger sets an error in the thread local storage.
 	// so C.mecab_model_new_tagger and C.mecab_strerror must be call in same thread.
 	runtime.LockOSThread()
@@ -101,6 +110,10 @@ func (m Model) NewMeCab() (MeCab, error) {
 
 // NewLattice returns a new lattice.
 func (m Model) NewLattice() (Lattice, error) {
+	if m.m.model == nil {
+		panic(errModelNotAvailable)
+	}
+
 	// C.mecab_model_new_lattice sets an error in the thread local storage.
 	// so C.mecab_model_new_lattice and C.mecab_strerror must be call in same thread.
 	runtime.LockOSThread()
@@ -115,6 +128,10 @@ func (m Model) NewLattice() (Lattice, error) {
 
 // Swap replaces the model by the other model.
 func (m Model) Swap(m2 Model) error {
+	if m.m.model == nil || m2.m.model == nil {
+		panic(errModelNotAvailable)
+	}
+
 	// C.mecab_model_swap sets an error in the thread local storage.
 	// so C.mecab_model_swap and C.mecab_strerror must be call in same thread.
 	runtime.LockOSThread()
