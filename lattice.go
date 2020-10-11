@@ -54,9 +54,9 @@ func NewLattice() (Lattice, error) {
 
 // Destroy frees the lattice.
 func (l Lattice) Destroy() {
+	runtime.SetFinalizer(l.l, nil) // clear the finalizer
 	C.mecab_lattice_destroy(l.l.lattice)
 	l.l.lattice = nil
-	runtime.KeepAlive(l.l)
 }
 
 // Clear set empty string to the lattice.

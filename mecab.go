@@ -81,6 +81,7 @@ func New(args map[string]string) (MeCab, error) {
 
 // Destroy frees the MeCab parser.
 func (m MeCab) Destroy() {
+	runtime.SetFinalizer(m.m, nil) // clear the finalizer
 	C.mecab_destroy(m.m.mecab)
 	m.m.mecab = nil
 }

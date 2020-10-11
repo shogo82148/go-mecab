@@ -79,6 +79,7 @@ func NewModel(args map[string]string) (Model, error) {
 
 // Destroy frees the model.
 func (m Model) Destroy() {
+	runtime.SetFinalizer(m.m, nil) // clear the finalizer
 	C.mecab_model_destroy(m.m.model)
 	m.m.model = nil
 }
