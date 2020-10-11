@@ -160,7 +160,7 @@ func BenchmarkParseToNode(b *testing.B) {
 	mecab.Parse("")
 
 	for i := 0; i < b.N; i++ {
-		for node, _ := mecab.ParseToNode("こんにちは世界"); node != (Node{}); node = node.Next() {
+		for node, _ := mecab.ParseToNode("こんにちは世界"); !node.IsZero(); node = node.Next() {
 			node.Surface()
 		}
 	}
