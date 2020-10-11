@@ -2,6 +2,7 @@ package mecab
 
 import (
 	"os"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -150,6 +151,15 @@ func TestParseToNode(t *testing.T) {
 	if node.Surface() != "世界" {
 		t.Errorf("want 世界, but %s", node.Surface())
 	}
+}
+
+func TestMeCabFinalizer(t *testing.T) {
+	for i := 0; i < 10000; i++ {
+		New(rcfile(map[string]string{}))
+	}
+	runtime.GC()
+	runtime.GC()
+	runtime.GC()
 }
 
 func BenchmarkParseToNode(b *testing.B) {
