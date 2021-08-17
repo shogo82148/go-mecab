@@ -1,3 +1,3 @@
 module github.com/shogo82148/go-mecab
 
-go 1.12
+go 1.17
