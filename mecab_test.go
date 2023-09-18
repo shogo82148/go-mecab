@@ -123,7 +123,7 @@ func BenchmarkParseLattice(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		lattice.SetSentence("こんにちは世界")
 		mecab.ParseLattice(lattice)
-		lattice.String()
+		runtime.KeepAlive(lattice.String())
 	}
 }
 
