@@ -5,7 +5,6 @@ package mecab
 import "C"
 import (
 	"errors"
-	"reflect"
 	"runtime"
 	"unsafe"
 )
@@ -124,9 +123,8 @@ func (l Lattice) SetSentence(s string) {
 	if s == "" {
 		s = "dummy"
 	}
-	header := (*reflect.StringHeader)(unsafe.Pointer(&s))
-	input := (*C.char)(unsafe.Pointer(header.Data))
 
+	input := (*C.char)(unsafe.Pointer(unsafe.StringData(s)))
 	C.mecab_lattice_add_request_type(l.l.lattice, 64) // MECAB_ALLOCATE_SENTENCE = 64
 	C.mecab_lattice_set_sentence2(l.l.lattice, input, length)
 	runtime.KeepAlive(l.l)
