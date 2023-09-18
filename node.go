@@ -9,7 +9,7 @@ type Node struct {
 	node *C.mecab_node_t
 
 	// actual data of node is stored in mecab or lattice.
-	// they are here to avoid garbase collection.
+	// they are here to avoid garbage collection.
 	mecab   *mecab
 	lattice *lattice
 }
