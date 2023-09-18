@@ -7,7 +7,6 @@ import "C"
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"runtime"
 	"unsafe"
 )
@@ -100,9 +99,8 @@ func (m MeCab) Parse(s string) (string, error) {
 	if s == "" {
 		s = "dummy"
 	}
-	header := (*reflect.StringHeader)(unsafe.Pointer(&s))
-	input := (*C.char)(unsafe.Pointer(header.Data))
 
+	input := (*C.char)(unsafe.Pointer(unsafe.StringData(s)))
 	result := C.mecab_sparse_tostr2(m.m.mecab, input, length)
 	if result == nil {
 		return "", newError(m.m.mecab)
@@ -141,9 +139,8 @@ func (m MeCab) ParseToNode(s string) (Node, error) {
 	if s == "" {
 		s = "dummy"
 	}
-	header := (*reflect.StringHeader)(unsafe.Pointer(&s))
-	input := (*C.char)(unsafe.Pointer(header.Data))
 
+	input := (*C.char)(unsafe.Pointer(unsafe.StringData(s)))
 	node := C.mecab_sparse_tonode2(m.m.mecab, input, length)
 	if node == nil {
 		return Node{}, newError(m.m.mecab)
