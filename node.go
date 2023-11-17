@@ -75,6 +75,11 @@ func (node Node) RLength() int {
 	return int(node.node.rlength)
 }
 
+// PosID returns the part-of-speech id.
+func (node Node) PosID() int {
+	return int(node.node.posid)
+}
+
 // Prev returns the previous Node.
 func (node Node) Prev() Node {
 	return Node{node: (*C.mecab_node_t)(node.node.prev)}
