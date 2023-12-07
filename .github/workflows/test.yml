@@ -33,7 +33,7 @@ jobs:
         run: |
           .github/install-mecab-linux.sh
       - name: setup Go ${{ matrix.go }}
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
       - name: test
@@ -63,7 +63,7 @@ jobs:
         run: |
           .github/install-mecab-darwin.sh
       - name: setup Go ${{ matrix.go }}
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
       - name: test
@@ -90,7 +90,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.MECAB_VERSION }}-${{ env.IPADIC_VERSION }}-
       - name: setup Go ${{ matrix.go }}
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
       - uses: msys2/setup-msys2@v2
