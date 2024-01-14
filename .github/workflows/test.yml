@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  MECAB_VERSION: "0.996.6"
+  MECAB_VERSION: "0.996.10"
   IPADIC_VERSION: "2.7.0-20070801"
 
 jobs:
