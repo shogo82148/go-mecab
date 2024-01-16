@@ -96,11 +96,9 @@ func (m MeCab) Parse(s string) (string, error) {
 		panic(errMeCabNotAvailable)
 	}
 	length := C.size_t(len(s))
-	if s == "" {
-		s = "dummy"
-	}
+	input := C.CString(s)
+	defer C.free(unsafe.Pointer(input))
 
-	input := (*C.char)(unsafe.Pointer(unsafe.StringData(s)))
 	result := C.mecab_sparse_tostr2(m.m.mecab, input, length)
 	if result == nil {
 		return "", newError(m.m.mecab)
@@ -136,11 +134,9 @@ func (m MeCab) ParseToNode(s string) (Node, error) {
 		panic(errMeCabNotAvailable)
 	}
 	length := C.size_t(len(s))
-	if s == "" {
-		s = "dummy"
-	}
+	input := C.CString(s)
+	defer C.free(unsafe.Pointer(input))
 
-	input := (*C.char)(unsafe.Pointer(unsafe.StringData(s)))
 	node := C.mecab_sparse_tonode2(m.m.mecab, input, length)
 	if node == nil {
 		return Node{}, newError(m.m.mecab)
