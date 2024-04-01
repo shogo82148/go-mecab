@@ -90,7 +90,7 @@ func (m MeCab) Destroy() {
 	m.m.mecab = nil
 }
 
-// Parse parses the string and returns the result as string
+// Parse parses the string and returns the result as string.
 func (m MeCab) Parse(s string) (string, error) {
 	if m.m.mecab == nil {
 		panic(errMeCabNotAvailable)
@@ -108,7 +108,7 @@ func (m MeCab) Parse(s string) (string, error) {
 	return C.GoString(result), nil
 }
 
-// ParseToString is alias of Parse
+// ParseToString is alias of [Parse].
 func (m MeCab) ParseToString(s string) (string, error) {
 	if m.m.mecab == nil {
 		panic(errMeCabNotAvailable)
