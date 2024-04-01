@@ -90,7 +90,7 @@ func (node Node) Next() Node {
 	return Node{node: (*C.mecab_node_t)(node.node.next)}
 }
 
-// ENext resturns a node which ends same position
+// ENext returns a node which ends same position
 func (node Node) ENext() Node {
 	return Node{
 		node:    (*C.mecab_node_t)(node.node.enext),
@@ -99,7 +99,7 @@ func (node Node) ENext() Node {
 	}
 }
 
-// BNext resturns a node which begins same position
+// BNext returns a node which begins same position
 func (node Node) BNext() Node {
 	return Node{
 		node:    (*C.mecab_node_t)(node.node.bnext),

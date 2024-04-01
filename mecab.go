@@ -29,7 +29,8 @@ func newMeCab(m *C.mecab_t) *mecab {
 // It is a marker that a mecab must not be copied after the first use.
 // See https://github.com/golang/go/issues/8005#issuecomment-190753527
 // for details.
-func (*mecab) Lock() {}
+func (*mecab) Lock()   {}
+func (*mecab) Unlock() {}
 
 func finalizeMeCab(m *mecab) {
 	if m.mecab != nil {
@@ -91,6 +92,7 @@ func (m MeCab) Destroy() {
 }
 
 // Parse parses the string and returns the result as string.
+// Parse is not safe for concurrent use by multiple goroutines.
 func (m MeCab) Parse(s string) (string, error) {
 	if m.m.mecab == nil {
 		panic(errMeCabNotAvailable)
@@ -109,6 +111,7 @@ func (m MeCab) Parse(s string) (string, error) {
 }
 
 // ParseToString is alias of [Parse].
+// ParseToString is not safe for concurrent use by multiple goroutines.
 func (m MeCab) ParseToString(s string) (string, error) {
 	if m.m.mecab == nil {
 		panic(errMeCabNotAvailable)
@@ -117,6 +120,8 @@ func (m MeCab) ParseToString(s string) (string, error) {
 }
 
 // ParseLattice parses the lattice and returns the result as string.
+// ParseLattice is safe for concurrent use by multiple goroutines.
+// Create a lattice for each goroutine.
 func (m MeCab) ParseLattice(lattice Lattice) error {
 	if m.m.mecab == nil {
 		panic(errMeCabNotAvailable)
@@ -128,7 +133,8 @@ func (m MeCab) ParseLattice(lattice Lattice) error {
 	return nil
 }
 
-// ParseToNode parses the string and returns the result as Node
+// ParseToNode parses the string and returns the result as [Node].
+// ParseToNode is not safe for concurrent use by multiple goroutines.
 func (m MeCab) ParseToNode(s string) (Node, error) {
 	if m.m.mecab == nil {
 		panic(errMeCabNotAvailable)
@@ -148,6 +154,7 @@ func (m MeCab) ParseToNode(s string) (Node, error) {
 	}, nil
 }
 
+// Error returns the error of MeCab.
 func (m MeCab) Error() error {
 	if m.m.mecab == nil {
 		panic(errMeCabNotAvailable)

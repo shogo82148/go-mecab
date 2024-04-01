@@ -61,7 +61,8 @@ func newLattice(l *C.mecab_lattice_t) *lattice {
 // It is a marker that a lattice must not be copied after the first use.
 // See https://github.com/golang/go/issues/8005#issuecomment-190753527
 // for details.
-func (*lattice) Lock() {}
+func (*lattice) Lock()   {}
+func (*lattice) Unlock() {}
 
 func finalizeLattice(l *lattice) {
 	if l.lattice != nil {
