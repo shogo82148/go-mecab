@@ -59,7 +59,7 @@ func ExampleMeCab_ParseLattice() {
 	// EOS
 }
 
-func ExampleMeCab_ParseLattice_NBest() {
+func ExampleMeCab_ParseLattice_nBest() {
 	options := map[string]string{}
 	if path := os.Getenv("MECABRC_PATH"); path != "" {
 		options["rcfile"] = path
