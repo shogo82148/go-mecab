@@ -9,6 +9,41 @@ import (
 	"unsafe"
 )
 
+// RequestType is a request type.
+type RequestType int
+
+const (
+	// RequestTypeOneBest is a request type for one best result.
+	RequestTypeOneBest RequestType = 1
+
+	// RequestTypeNBest is a request type for N-best results.
+	RequestTypeNBest RequestType = 2
+
+	// RequestTypePartial enables a partial parsing mode.
+	// When this flag is set, the input |sentence| needs to be written
+	// in partial parsing format.
+	RequestTypePartial RequestType = 4
+
+	// RequestTypeMarginalProb is a request type for marginal probability.
+	// Set this flag if you want to obtain marginal probabilities.
+	// Marginal probability is set in [Node.Prob].
+	// The parsing speed will get 3-5 times slower than the default mode.
+	RequestTypeMarginalProb RequestType = 8
+
+	// RequestTypeMorphsToNBest is a request type for alternative results.
+	// Set this flag if you want to obtain alternative results.
+	// Not implemented.
+	RequestTypeAlternative RequestType = 16
+
+	// RequestTypeAllMorphs is a request type for all morphs.
+	RequestTypeAllMorphs RequestType = 32
+
+	// RequestTypeAllocateSentence is a request type for allocating sentence.
+	// When this flag is set, tagger internally copies the body of passed
+	// sentence into internal buffer.
+	RequestTypeAllocateSentence RequestType = 64
+)
+
 var errLatticeNotAvailable = errors.New("mecab: lattice is not available")
 
 type lattice struct {
@@ -26,7 +61,8 @@ func newLattice(l *C.mecab_lattice_t) *lattice {
 // It is a marker that a lattice must not be copied after the first use.
 // See https://github.com/golang/go/issues/8005#issuecomment-190753527
 // for details.
-func (*lattice) Lock() {}
+func (*lattice) Lock()   {}
+func (*lattice) Unlock() {}
 
 func finalizeLattice(l *lattice) {
 	if l.lattice != nil {
@@ -123,7 +159,7 @@ func (l Lattice) SetSentence(s string) {
 	input := C.CString(s)
 	defer C.free(unsafe.Pointer(input))
 
-	C.mecab_lattice_add_request_type(l.l.lattice, 64) // MECAB_ALLOCATE_SENTENCE = 64
+	C.mecab_lattice_add_request_type(l.l.lattice, C.int(RequestTypeAllocateSentence)) // MECAB_ALLOCATE_SENTENCE = 64
 	C.mecab_lattice_set_sentence2(l.l.lattice, input, length)
 	runtime.KeepAlive(l.l)
 }
@@ -135,4 +171,42 @@ func (l Lattice) String() string {
 	s := C.GoString(C.mecab_lattice_tostr(l.l.lattice))
 	runtime.KeepAlive(l.l)
 	return s
+}
+
+// Next obtains next-best result. The internal linked list structure is updated.
+// You should set [RequestTypeNBest] in advance.
+// Return false if no more results are available or [RequestType] is invalid.
+func (l Lattice) Next() bool {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
+	next := C.mecab_lattice_next(l.l.lattice) != 0
+	runtime.KeepAlive(l)
+	return next
+}
+
+// RequestType returns the request type.
+func (l Lattice) RequestType() RequestType {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
+	return RequestType(C.mecab_lattice_get_request_type(l.l.lattice))
+}
+
+// SetRequestType sets the request type.
+func (l Lattice) SetRequestType(t RequestType) {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
+	C.mecab_lattice_add_request_type(l.l.lattice, C.int(t))
+	runtime.KeepAlive(l)
+}
+
+// AddRequestType adds the request type.
+func (l Lattice) AddRequestType(t RequestType) {
+	if l.l.lattice == nil {
+		panic(errLatticeNotAvailable)
+	}
+	C.mecab_lattice_add_request_type(l.l.lattice, C.int(t))
+	runtime.KeepAlive(l)
 }
