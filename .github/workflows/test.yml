@@ -27,8 +27,8 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/cache@v6.1.0
         with:
           path: |
             ${{ github.workspace }}/mecab
@@ -39,7 +39,7 @@ jobs:
         run: |
           .github/install-mecab-linux.sh
       - name: setup Go ${{ matrix.go }}
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        uses: actions/setup-go@v7.0.0
         with:
           go-version: ${{ matrix.go }}
       - name: test
@@ -63,8 +63,8 @@ jobs:
       fail-fast: false
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/cache@v6.1.0
         with:
           path: |
             ${{ github.workspace }}/mecab
@@ -75,7 +75,7 @@ jobs:
         run: |
           .github/install-mecab-darwin.sh
       - name: setup Go ${{ matrix.go }}
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        uses: actions/setup-go@v7.0.0
         with:
           go-version: ${{ matrix.go }}
       - name: test
@@ -99,8 +99,8 @@ jobs:
       fail-fast: false
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/cache@v6.1.0
         with:
           path: |
             ${{ github.workspace }}/mecab
@@ -108,10 +108,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.MECAB_VERSION }}-${{ env.IPADIC_VERSION }}-
       - name: setup Go ${{ matrix.go }}
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        uses: actions/setup-go@v7.0.0
         with:
           go-version: ${{ matrix.go }}
-      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
+      - uses: msys2/setup-msys2@v2.33.0
         with:
           install: autoconf bison make automake1.16 automake-wrapper mingw-w64-x86_64-gcc mingw-w64-x86_64-libtool mingw-w64-x86_64-libiconv
 
